@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
+import { Mail, MapPin, Phone } from 'lucide-react';
 import { currentYear, type SiteData } from '@/lib/api';
 import { href, type Locale, type Page, type Translate } from '@/lib/i18n';
 import { cx } from '@/lib/cx';
-import { hasOutline, SocialOutline } from '../ui/BrandIcons';
+import { hasOutline, SocialOutline, WhatsAppIcon } from '../ui/BrandIcons';
 import { IconTile } from '../ui/IconTile';
 import { Logo } from '../ui/Logo';
 
@@ -19,16 +19,18 @@ export async function Footer({ locale, t, site }: { locale: Locale; t: Translate
     const year = await currentYear();
     const services = site.services.slice(0, 6);
 
+    // active: touch has no hover, so presses answer with a tint (and a small scale on the squares).
     const square =
-        'grid size-11 place-items-center rounded-btn border border-line bg-surface text-ink-soft transition-colors hover:border-primary-line hover:bg-primary-soft hover:text-primary-ink';
+        'grid size-11 place-items-center rounded-btn border border-line bg-surface text-ink-soft transition-[color,background-color,border-color,scale] duration-150 ease-out hover:border-primary-line hover:bg-primary-soft hover:text-primary-ink active:bg-primary-soft motion-safe:active:scale-[0.96]';
     // Phones and tablets: 44px tall rows (touch targets). From `lg`, the design's rows, 10px apart.
     const list = 'flex flex-col items-start text-[15px] lg:gap-2.5';
-    const link = 'inline-flex min-h-11 items-center rounded-md text-ink-muted transition-colors hover:text-primary-ink lg:min-h-0';
+    const link = 'inline-flex min-h-11 items-center rounded-md text-ink-muted transition-colors hover:text-primary-ink active:text-primary-ink lg:min-h-0';
     // py + the same negative margin: a 44px tall hit area on the small bottom-bar links.
-    const barLink = '-my-2.5 inline-block rounded-md py-2.5 transition-colors hover:text-primary-ink';
+    const barLink = '-my-2.5 inline-block rounded-md py-2.5 transition-colors hover:text-primary-ink active:text-primary-ink';
 
     return (
-        <footer className="border-t border-line bg-surface">
+        // data-bar-hide: the phone action bar steps aside over the footer.
+        <footer className="border-t border-line bg-surface" data-bar-hide>
             <div className="shell grid grid-cols-2 gap-x-6 gap-y-10 pt-16 pb-8 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr] lg:gap-8 xl:gap-10">
                 <div className="col-span-2 flex flex-col items-start gap-3.5 sm:col-span-1">
                     <Link href={href(locale, 'home')} className="rounded-btn" aria-label={t('brand')}>
@@ -42,7 +44,7 @@ export async function Footer({ locale, t, site }: { locale: Locale; t: Translate
                             </a>
                         ))}
                         <a href={`https://wa.me/${site.contact.whatsapp}`} target="_blank" rel="noopener" aria-label={t('social.whatsapp')} className={square}>
-                            <MessageCircle className="size-5" aria-hidden="true" />
+                            <WhatsAppIcon className="size-5" />
                         </a>
                     </div>
                 </div>

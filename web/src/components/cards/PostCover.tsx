@@ -25,7 +25,8 @@ export function PostCover({ coverUrl, seed, eager = false, size = 'md', classNam
     const [card, mark] =
         size === 'lg'
             ? ['size-20 rounded-[20px] sm:size-24 sm:rounded-3xl', 'size-10 sm:size-12']
-            : ['size-16 rounded-2xl sm:size-[72px] sm:rounded-box', 'size-8 sm:size-9'];
+            : // Phones show the card as an 88px thumbnail (PostCard), so the placeholder shrinks with it.
+              ['size-11 rounded-xl sm:size-[72px] sm:rounded-box', 'size-6 sm:size-9'];
 
     return (
         <div className={cx('grid size-full place-items-center', tone, className)} aria-hidden="true">

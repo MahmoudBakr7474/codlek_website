@@ -3,11 +3,12 @@ import { Cairo } from 'next/font/google';
 import { Footer } from '@/components/layout/Footer';
 import { FloatingContact, type QuickLink } from '@/components/layout/FloatingContact';
 import { Header } from '@/components/layout/Header';
+import { MobileActionBar } from '@/components/layout/MobileActionBar';
 import { PageLoader } from '@/components/layout/PageLoader';
 import { Reveal } from '@/components/layout/Reveal';
 import { themeScript } from '@/components/layout/theme-script';
 import { getSite } from '@/lib/api';
-import { isLocale, locales, translator, type Locale } from '@/lib/i18n';
+import { href, isLocale, locales, translator, type Locale } from '@/lib/i18n';
 import { pageMetadata } from '@/lib/seo';
 import { SITE_URL, absolute } from '@/lib/site-url';
 import '../globals.css';
@@ -114,7 +115,20 @@ export default async function LocaleLayout({ children, params }: LayoutProps<'/[
                 </main>
 
                 <Footer locale={locale} t={t} site={site} />
-                {site.appearance.floatingContact && <FloatingContact links={quickLinks} toggleLabel={t('floating.toggle')} />}
+                {site.appearance.floatingContact && (
+                    <>
+                        <FloatingContact links={quickLinks} toggleLabel={t('floating.toggle')} />
+                        <MobileActionBar
+                            label={t('floating.toggle')}
+                            contactHref={href(locale, 'contact')}
+                            startLabel={t('cta.start_project')}
+                            whatsappHref={`https://wa.me/${site.contact.whatsapp}`}
+                            whatsappLabel={t('social.whatsapp')}
+                            phoneHref={`tel:${site.contact.phoneInternational}`}
+                            phoneLabel={t('floating.call')}
+                        />
+                    </>
+                )}
                 <Reveal />
             </body>
         </html>

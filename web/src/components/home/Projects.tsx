@@ -5,11 +5,16 @@ import { cx } from '@/lib/cx';
 import { ProjectCard } from '../cards/ProjectCard';
 import { ButtonLink } from '../ui/Button';
 import { SectionHeader } from '../ui/SectionHeader';
+import { snapItem, snapRow } from '../ui/snap-row';
 
-/** Projects marked "featured" in the admin (four at most), with the way to the full portfolio. */
+/**
+ * Projects marked "featured" in the admin (four at most), with the way to the full
+ * portfolio. Phones: one row that scrolls sideways (snap-row.ts), as the services do.
+ */
 export function Projects({ projects, locale, t, white }: { projects: ProjectData[]; locale: Locale; t: Translate; white: boolean }) {
+    const swipe = projects.length > 1;
     // Four cards: 2 × 2 until there is room for the design's single row.
-    const columns = projects.length === 4 ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-4' : 'grid-cols-[repeat(auto-fill,minmax(min(100%,260px),1fr))]';
+    const columns = projects.length === 4 ? 'sm:grid-cols-2 xl:grid-cols-4' : 'grid-cols-[repeat(auto-fill,minmax(min(100%,260px),1fr))]';
 
     return (
         <section id="projects" className={cx('py-16 sm:py-24', white && 'border-y border-line bg-surface')}>
@@ -26,9 +31,9 @@ export function Projects({ projects, locale, t, white }: { projects: ProjectData
                     }
                 />
 
-                <div className={cx('grid gap-6', columns)}>
-                    {projects.map((project, i) => (
-                        <ProjectCard key={project.id} project={project} locale={locale} t={t} delay={(i % 4) * 70} />
+                <div className={swipe ? cx(snapRow, 'sm:gap-6', columns) : cx('grid gap-6', columns)} data-reveal-row={swipe || undefined}>
+                    {projects.map((project) => (
+                        <ProjectCard key={project.id} project={project} locale={locale} t={t} className={swipe ? cx(snapItem, 'w-[86%]') : undefined} />
                     ))}
                 </div>
             </div>

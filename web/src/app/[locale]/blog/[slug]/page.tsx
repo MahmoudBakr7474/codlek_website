@@ -125,8 +125,8 @@ export default async function ArticlePage({ params }: PageProps<'/[locale]/blog/
                         <div className="shell">
                             <SectionHeader align="start" title={t('blog.related')} />
                             <div className="mt-10 grid gap-6 sm:mt-12 sm:grid-cols-2 lg:grid-cols-3 sm:max-lg:[&>:nth-child(3)]:hidden">
-                                {related.map((item, i) => (
-                                    <PostCard key={item.slug} post={item} locale={locale} t={t} delay={i * 70} />
+                                {related.map((item) => (
+                                    <PostCard key={item.slug} post={item} locale={locale} t={t} />
                                 ))}
                             </div>
                         </div>

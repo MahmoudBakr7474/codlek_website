@@ -115,7 +115,7 @@ function tint(hex: string): string {
 function TechLogo({ name, color }: { name: string; color: string }) {
     const logo = logos.get(name.toLowerCase().replace(/[\s.\-_]/g, ''));
     const hex = logo ? ('icon' in logo ? logo.icon.hex : logo.hex) : color.replace('#', '');
-    const className = cx('size-[18px] shrink-0', tint(hex));
+    const className = cx('size-4 shrink-0 sm:size-[18px]', tint(hex));
     const style = { '--brand': `#${hex}` } as React.CSSProperties;
 
     if (logo && 'icon' in logo) {
@@ -140,13 +140,13 @@ export function Technologies({ technologies, t, white }: { technologies: Schemas
                     <p className="max-w-[640px] text-[17px] text-ink-muted sm:text-lg">{t('home.tech.lead')}</p>
                 </div>
 
-                <ul className="flex flex-wrap justify-center gap-2.5 sm:gap-3" dir="ltr">
+                {/* Tighter chips on phones: about 8 rows instead of 11. */}
+                <ul className="flex flex-wrap justify-center gap-2 sm:gap-3" dir="ltr">
                     {technologies.map((tech, i) => (
                         <li
                             key={`${tech.name}-${i}`}
-                            className="inline-flex items-center gap-2.5 rounded-btn-lg border border-line bg-surface-muted px-4 py-2 text-[15px] font-bold text-ink sm:px-[18px] sm:py-2.5"
+                            className="inline-flex items-center gap-2 rounded-btn-lg border border-line bg-surface-muted px-3 py-1.5 text-sm font-bold text-ink sm:gap-2.5 sm:px-[18px] sm:py-2.5 sm:text-[15px]"
                             data-reveal
-                            style={{ '--reveal-delay': `${(i % 8) * 40}ms` } as React.CSSProperties}
                         >
                             <TechLogo name={tech.name} color={tech.color} />
                             {tech.name}

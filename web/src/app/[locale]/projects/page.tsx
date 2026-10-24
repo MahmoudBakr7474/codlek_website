@@ -55,9 +55,10 @@ async function ProjectList({ locale, t, category }: { locale: Locale; t: Transla
         return <EmptyState icon={LayoutGrid} text={t('projects.empty')} />;
     }
 
-    const pill = 'inline-flex h-11 items-center gap-2 whitespace-nowrap rounded-full border px-4 text-[15px] transition-colors duration-200';
+    const pill =
+        'inline-flex h-11 items-center gap-2 whitespace-nowrap rounded-full border px-4 text-[15px] transition-[color,background-color,border-color,scale] duration-150 ease-out motion-safe:active:scale-[0.96]';
     const on = 'border-primary-line bg-primary-soft font-bold text-primary-ink';
-    const off = 'border-line bg-surface font-semibold text-ink-soft shadow-xs hover:border-primary-line hover:text-primary-ink';
+    const off = 'border-line bg-surface font-semibold text-ink-soft shadow-xs hover:border-primary-line hover:text-primary-ink active:border-primary-line';
 
     return (
         <>
@@ -90,7 +91,7 @@ async function ProjectList({ locale, t, category }: { locale: Locale; t: Transla
 
             <div className="mt-8 grid gap-6 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3">
                 {projects.map((project, i) => (
-                    <ProjectCard key={project.id} project={project} locale={locale} t={t} delay={(i % 3) * 70} heading="h2" eager={i === 0} />
+                    <ProjectCard key={project.id} project={project} locale={locale} t={t} heading="h2" eager={i === 0} />
                 ))}
             </div>
         </>

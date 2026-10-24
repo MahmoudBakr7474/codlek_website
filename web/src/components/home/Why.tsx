@@ -3,6 +3,7 @@ import type { Schemas } from '@/lib/api';
 import { href, type Locale, type Translate } from '@/lib/i18n';
 import { cx } from '@/lib/cx';
 import { ButtonLink } from '../ui/Button';
+import { CountUp } from '../ui/CountUp';
 import { Eyebrow } from '../ui/Eyebrow';
 import { NamedIconTile } from '../ui/NamedIconTile';
 
@@ -47,7 +48,9 @@ export function Why({ why, years, locale, t, white }: { why: Schemas['Why']; yea
                 >
                     <div className="flex flex-col items-center gap-1.5 rounded-[20px] bg-navy px-6 py-9 text-center text-white">
                         <p className="text-[3.5rem] leading-[1.1] font-extrabold text-navy-glow sm:text-[72px]">
-                            <bdi dir="ltr">{years}+</bdi>
+                            <bdi dir="ltr">
+                                <CountUp value={`${years}+`} />
+                            </bdi>
                         </p>
                         <p className="text-xl leading-[1.7] font-extrabold">{t('home.why.years_title')}</p>
                         <p className="text-[15px] text-navy-muted">{t('home.why.years_text')}</p>
@@ -58,7 +61,9 @@ export function Why({ why, years, locale, t, white }: { why: Schemas['Why']; yea
                             {why.stats.map((stat, i) => (
                                 <li key={i} className="min-w-0 rounded-2xl bg-bg px-2 py-4 text-center">
                                     <p className="text-[1.625rem] font-extrabold text-primary-ink sm:text-[28px]">
-                                        <bdi dir="ltr">{stat.value}</bdi>
+                                        <bdi dir="ltr">
+                                            <CountUp value={stat.value} />
+                                        </bdi>
                                     </p>
                                     <p className="text-sm font-semibold text-ink-muted">{stat.label}</p>
                                 </li>

@@ -22,8 +22,8 @@ export function Pagination({
         return null;
     }
 
-    const item = 'grid h-11 min-w-11 place-items-center rounded-btn px-3 text-[15px] font-bold transition-colors';
-    const link = cx(item, 'border border-line bg-surface text-ink-soft hover:border-primary hover:text-primary-ink');
+    const item = 'grid h-11 min-w-11 place-items-center rounded-btn px-3 text-[15px] font-bold transition-[color,background-color,border-color,scale] duration-150 ease-out';
+    const link = cx(item, 'border border-line bg-surface text-ink-soft hover:border-primary hover:text-primary-ink active:border-primary motion-safe:active:scale-[0.96]');
     const off = cx(item, 'border border-line/60 text-ink-subtle opacity-60');
 
     // All pages up to 7; beyond that the first, the last and the current one with its neighbours.

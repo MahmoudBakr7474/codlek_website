@@ -25,12 +25,16 @@ export default async function ContactPage({ params, searchParams }: PageProps<'/
 
     // Contact rows: the whole card is the link (mail / call); the location is plain text.
     const row = 'flex items-center gap-4 rounded-box border border-line bg-surface p-4 shadow-card sm:p-5';
+    // The email and phone rows are links: hover tint, and a press that answers on touch.
+    const pressRow =
+        'transition-[color,background-color,border-color,scale] duration-200 hover:border-primary-line active:border-primary-line active:duration-150 motion-safe:active:scale-[0.985]';
 
     return (
         <>
             <PageHero locale={locale} t={t} eyebrow={t('contact.hero.eyebrow')} title={t('contact.hero.title')} lead={t('contact.hero.lead')} />
 
-            <section className="py-16 sm:py-24">
+            {/* data-bar-hide: this page is its own call to action, so the phone action bar stays away. */}
+            <section className="py-16 sm:py-24" data-bar-hide>
                 <div className="shell grid items-start gap-6 lg:grid-cols-12 lg:gap-8">
                     <div id="contact-form" className="rounded-card border border-line bg-surface p-5 shadow-card sm:p-8 lg:col-span-7 lg:p-10 xl:col-span-8">
                         <div className="flex items-start gap-4">
@@ -51,7 +55,7 @@ export default async function ContactPage({ params, searchParams }: PageProps<'/
                     <aside className="grid min-w-0 items-start gap-4 md:grid-cols-2 lg:col-span-5 lg:grid-cols-1 xl:col-span-4">
                         <ul className="flex min-w-0 flex-col gap-3">
                             <li>
-                                <a href={`mailto:${site.contact.email}`} className={`group ${row} transition-colors duration-200 hover:border-primary-line`}>
+                                <a href={`mailto:${site.contact.email}`} className={`group ${row} ${pressRow}`}>
                                     <IconTile icon={Mail} />
                                     <span className="min-w-0">
                                         <span className="block text-sm text-ink-muted">{t('contact.email')}</span>
@@ -62,7 +66,7 @@ export default async function ContactPage({ params, searchParams }: PageProps<'/
                                 </a>
                             </li>
                             <li>
-                                <a href={`tel:${site.contact.phoneInternational}`} className={`group ${row} transition-colors duration-200 hover:border-primary-line`}>
+                                <a href={`tel:${site.contact.phoneInternational}`} className={`group ${row} ${pressRow}`}>
                                     <IconTile icon={Phone} />
                                     <span className="min-w-0">
                                         <span className="block text-sm text-ink-muted">{t('contact.phone')}</span>
@@ -105,7 +109,7 @@ export default async function ContactPage({ params, searchParams }: PageProps<'/
                                                     target="_blank"
                                                     rel="noopener"
                                                     aria-label={social.label}
-                                                    className="grid size-11 place-items-center rounded-btn border border-line bg-surface text-ink-soft transition-colors hover:border-primary-line hover:bg-primary-soft hover:text-primary-ink"
+                                                    className="grid size-11 place-items-center rounded-btn border border-line bg-surface text-ink-soft transition-[color,background-color,border-color,scale] duration-150 ease-out hover:border-primary-line hover:bg-primary-soft hover:text-primary-ink active:bg-primary-soft motion-safe:active:scale-[0.96]"
                                                 >
                                                     <SocialIcon platform={social.platform} className="size-[18px]" />
                                                 </a>

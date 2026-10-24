@@ -54,8 +54,8 @@ export default async function CareersPage({ params, searchParams }: PageProps<'/
                                 <EmptyState icon={BriefcaseBusiness} text={t('careers.no_jobs')} className="mt-6" />
                             ) : (
                                 <ul className="mt-6 flex flex-col gap-4" role="list">
-                                    {jobs.map((job, i) => (
-                                        <li key={job.id} data-reveal style={{ '--reveal-delay': `${Math.min(i, 5) * 60}ms` } as React.CSSProperties}>
+                                    {jobs.map((job) => (
+                                        <li key={job.id} data-reveal>
                                             <article className="flex flex-col gap-4 rounded-card border border-line bg-surface p-5 shadow-card sm:p-7">
                                                 {/* The meta pills run under tile and title on phones, beside the tile from `sm`. */}
                                                 <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-3 sm:items-start sm:gap-y-2">
@@ -98,7 +98,7 @@ export default async function CareersPage({ params, searchParams }: PageProps<'/
                         </div>
 
                         <div className={cx('min-w-0', hasJobs && 'lg:col-span-5')}>
-                            <div id="apply" className="rounded-card border border-line bg-surface p-5 shadow-card sm:p-8">
+                            <div id="apply" className="rounded-card border border-line bg-surface p-5 shadow-card sm:p-8" data-bar-hide>
                                 <div className="flex items-start gap-4">
                                     <IconTile icon={FileUser} size="lg" />
                                     <div className="min-w-0">

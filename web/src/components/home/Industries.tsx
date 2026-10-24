@@ -23,7 +23,6 @@ export function Industries({ industries, t, white }: { industries: Schemas['Icon
                             key={i}
                             className="flex flex-col items-start gap-3 rounded-box border border-line bg-surface p-4 sm:flex-row sm:items-center sm:gap-4 sm:p-5"
                             data-reveal
-                            style={{ '--reveal-delay': `${(i % 4) * 60}ms` } as React.CSSProperties}
                         >
                             <NamedIconTile icon={industry.icon} tone="muted" size="lg" stroke={1.8} />
                             <div className="min-w-0">

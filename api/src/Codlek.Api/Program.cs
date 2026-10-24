@@ -110,6 +110,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapGet("/api/health", () => Results.Ok(new { status = "ok" }));
+// The API host has no page of its own: its bare address opens the dashboard.
+app.MapGet("/", () => Results.Redirect("/admin/")).ExcludeFromDescription();
 app.MapPublicEndpoints();
 app.MapFormEndpoints();
 

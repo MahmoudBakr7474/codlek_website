@@ -51,7 +51,7 @@ export async function LegalPage({ locale, t, page }: { locale: Locale; t: Transl
 
                         <Link
                             href={href(locale, other)}
-                            className="group mt-4 flex items-center gap-4 rounded-box border border-line bg-surface p-4 shadow-card transition-colors duration-200 hover:border-primary-line sm:p-5"
+                            className="group mt-4 flex items-center gap-4 rounded-box border border-line bg-surface p-4 shadow-card transition-[color,background-color,border-color,scale] duration-200 hover:border-primary-line active:border-primary-line active:duration-150 motion-safe:active:scale-[0.985] sm:p-5"
                         >
                             <IconTile icon={other === 'terms' ? Scale : ShieldCheck} />
                             <span className="min-w-0 flex-1 text-base font-extrabold transition-colors group-hover:text-primary-ink">{t(`legal.${other}_title`)}</span>

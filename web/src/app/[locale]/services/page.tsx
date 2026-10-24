@@ -45,7 +45,7 @@ export default async function ServicesPage({ params }: PageProps<'/[locale]/serv
                                 <li key={service.key} className="shrink-0">
                                     <a
                                         href={`#${service.key}`}
-                                        className="inline-flex h-11 items-center gap-2 rounded-full border border-line bg-surface ps-1.5 pe-4 text-[15px] font-semibold whitespace-nowrap text-ink-soft shadow-xs transition-colors duration-200 hover:border-primary-line hover:text-primary-ink"
+                                        className="inline-flex h-11 items-center gap-2 rounded-full border border-line bg-surface ps-1.5 pe-4 text-[15px] font-semibold whitespace-nowrap text-ink-soft shadow-xs transition-[color,background-color,border-color,scale] duration-150 ease-out hover:border-primary-line hover:text-primary-ink active:border-primary-line motion-safe:active:scale-[0.96]"
                                     >
                                         <span className={cx('grid size-8 shrink-0 place-items-center rounded-full', chipTones[service.tone] ?? chipTones.blue)}>
                                             <Icon name={service.icon} fallback="layout-grid" className="size-4" />
@@ -71,7 +71,7 @@ export default async function ServicesPage({ params }: PageProps<'/[locale]/serv
                                     {/* Decorative (alt=""): the heading beside it names the service. */}
                                     <div
                                         className={cx(
-                                            'flex items-center justify-center border-b border-line bg-surface-sunken p-4 sm:p-6 lg:border-b-0 lg:p-8',
+                                            'flex items-center justify-center border-b border-line bg-surface-sunken p-3 sm:p-6 lg:border-b-0 lg:p-8',
                                             flip ? 'lg:border-e' : 'lg:order-2 lg:border-s',
                                         )}
                                     >
@@ -84,10 +84,11 @@ export default async function ServicesPage({ params }: PageProps<'/[locale]/serv
                                                     height={800}
                                                     loading="lazy"
                                                     decoding="async"
-                                                    className="shot aspect-[3/2] w-full rounded-box border border-line bg-surface object-cover"
+                                                    // Phones: the 2:1 crop of the home cards, so a service is about a screen tall.
+                                                    className="shot aspect-[2/1] w-full rounded-box border border-line bg-surface object-cover sm:aspect-[3/2]"
                                                 />
                                             ) : (
-                                                <div className="grid aspect-[3/2] w-full place-items-center rounded-box border border-line bg-surface">
+                                                <div className="grid aspect-[2/1] w-full place-items-center rounded-box border border-line bg-surface sm:aspect-[3/2]">
                                                     <NamedIconTile icon={service.icon} tone={service.tone} size="lg" className="scale-150" />
                                                 </div>
                                             )}
@@ -95,7 +96,7 @@ export default async function ServicesPage({ params }: PageProps<'/[locale]/serv
                                         </div>
                                     </div>
 
-                                    <div className="flex min-w-0 flex-col p-6 sm:p-8 lg:p-10">
+                                    <div className="flex min-w-0 flex-col p-5 sm:p-8 lg:p-10">
                                         <div className="flex items-center gap-4">
                                             <NamedIconTile icon={service.icon} tone={service.tone} size="lg" />
                                             <h2 className="text-2xl font-extrabold sm:text-[1.75rem]">{service.title}</h2>

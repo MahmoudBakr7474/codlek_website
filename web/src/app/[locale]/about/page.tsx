@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Award, Check } from 'lucide-react';
+import { CountUp } from '@/components/ui/CountUp';
 import { CtaBand } from '@/components/ui/CtaBand';
 import { IconTile } from '@/components/ui/IconTile';
 import { LogoMark } from '@/components/ui/Logo';
@@ -104,7 +105,6 @@ export default async function AboutPage({ params }: PageProps<'/[locale]/about'>
                                     key={i}
                                     className="flex w-full flex-col items-center gap-2 rounded-box border border-line bg-surface-muted px-3 py-6 text-center min-[360px]:w-[calc(50%_-_0.375rem)] sm:w-[calc(50%_-_0.75rem)] sm:px-6 sm:py-8 lg:w-[calc(25%_-_1.125rem)]"
                                     data-reveal
-                                    style={{ '--reveal-delay': `${(i % 4) * 70}ms` } as React.CSSProperties}
                                 >
                                     <NamedIconTile icon={value.icon} tone={tones[i % tones.length]} size="lg" className="mb-2" />
                                     <h3 className="text-base font-extrabold sm:text-[19px]">{value.title}</h3>
@@ -136,12 +136,16 @@ export default async function AboutPage({ params }: PageProps<'/[locale]/about'>
                     <div className="rounded-panel border border-line bg-surface p-4 shadow-panel sm:p-7" data-reveal style={{ '--reveal-delay': '120ms' } as React.CSSProperties}>
                         <div className="flex flex-col items-center gap-1.5 rounded-[20px] bg-navy px-6 py-10 text-center text-white sm:py-12">
                             <p className="text-6xl leading-[1.1] font-extrabold text-navy-glow sm:text-7xl" dir="ltr">
-                                {about.satisfaction}
+                                <CountUp value={about.satisfaction} />
                             </p>
                             <p className="text-xl font-extrabold">{t('about.why.satisfaction')}</p>
                             {meter !== null && (
+                                // Fills from the start side as the card appears (globals.css .meter-fill).
                                 <div className="mt-5 flex h-2 w-full max-w-64 overflow-hidden rounded-full bg-navy-chip" aria-hidden="true">
-                                    <span className="rounded-full bg-navy-glow" style={{ width: `${meter}%` }} />
+                                    <span
+                                        className="meter-fill block h-full w-full origin-left rounded-full bg-navy-glow rtl:origin-right"
+                                        style={{ '--meter': meter / 100 } as React.CSSProperties}
+                                    />
                                 </div>
                             )}
                         </div>

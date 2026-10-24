@@ -63,7 +63,7 @@ async function PostList({ locale, t, page }: { locale: Locale; t: Translate; pag
         <>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {result.posts.map((post, i) => (
-                    <PostCard key={post.slug} post={post} locale={locale} t={t} delay={(i % 3) * 70} heading="h2" eager={i === 0} />
+                    <PostCard key={post.slug} post={post} locale={locale} t={t} heading="h2" eager={i === 0} />
                 ))}
             </div>
 

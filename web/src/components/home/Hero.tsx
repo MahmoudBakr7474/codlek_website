@@ -40,20 +40,23 @@ export function Hero({ home, locale, t }: { home: HomeData; locale: Locale; t: T
     return (
         <section className="border-b border-line bg-surface">
             <div className="shell grid items-center gap-14 pt-10 pb-16 sm:pt-14 sm:pb-20 lg:grid-cols-2 lg:pt-[72px]">
-                <div className="flex min-w-0 flex-col gap-6" data-reveal>
+                {/* .enter: the first screen rises line by line in CSS (--i is the order), as the
+                    loader's cover lifts, without waiting for React (globals.css). */}
+                <div className="flex min-w-0 flex-col gap-6">
                     {/* A long badge wraps on phones: softer corners than a pill there. */}
-                    <Eyebrow icon={ShieldCheck} className="max-sm:rounded-2xl">
+                    <Eyebrow icon={ShieldCheck} className="enter [--i:0] max-sm:rounded-2xl">
                         {t('home.hero.badge')}
                     </Eyebrow>
 
                     <h1 className="text-[2.25rem] leading-[1.3] font-extrabold sm:text-5xl lg:text-[3.5rem]">
-                        {t('home.hero.title_1')}
-                        <span className="block text-secondary">{t('home.hero.title_2')}</span>
+                        <span className="enter block [--i:1]">{t('home.hero.title_1')}</span>
+                        <span className="enter block text-secondary [--i:2]">{t('home.hero.title_2')}</span>
                     </h1>
 
-                    <p className="max-w-[560px] text-[17px] text-ink-muted sm:text-[19px]">{t('home.hero.lead')}</p>
+                    <p className="enter max-w-[560px] text-[17px] text-ink-muted [--i:3] sm:text-[19px]">{t('home.hero.lead')}</p>
 
-                    <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                    {/* data-bar-hide: the phone action bar stays away while these buttons are on screen. */}
+                    <div className="enter flex flex-col gap-3 [--i:4] sm:flex-row sm:flex-wrap" data-bar-hide>
                         <ButtonLink href={href(locale, 'contact')} size="lg" iconEnd={ArrowRight}>
                             {t('cta.start_now')}
                         </ButtonLink>
@@ -63,7 +66,7 @@ export function Hero({ home, locale, t }: { home: HomeData; locale: Locale; t: T
                     </div>
 
                     {home.heroStats.length > 0 && (
-                        <ul className={cx('grid max-w-[560px] rounded-box border border-line bg-surface-muted', statColumns)}>
+                        <ul className={cx('enter grid max-w-[560px] rounded-box border border-line bg-surface-muted [--i:5]', statColumns)}>
                             {home.heroStats.map((stat, i) => {
                                 const [value, outOf] = score(stat.value);
                                 return (
@@ -83,7 +86,7 @@ export function Hero({ home, locale, t }: { home: HomeData; locale: Locale; t: T
                     )}
                 </div>
 
-                <div className="relative min-w-0" data-reveal style={{ '--reveal-delay': '120ms' } as React.CSSProperties}>
+                <div className="enter enter-media relative min-w-0 [--i:2]">
                     {mainShot ? (
                         <>
                             {/* The first project in a browser window that rises out of the frame, the second as a smaller window over its corner. */}
@@ -124,7 +127,7 @@ export function Hero({ home, locale, t }: { home: HomeData; locale: Locale; t: T
                     )}
 
                     {home.heroTrust && (
-                        <div className="absolute start-4 -bottom-[22px] flex max-w-[calc(100%-2rem)] items-center gap-3 rounded-2xl border border-line bg-surface px-[18px] py-3 shadow-float sm:start-6 sm:max-w-[calc(100%-3rem)]">
+                        <div className="enter enter-pop absolute start-4 -bottom-[22px] flex max-w-[calc(100%-2rem)] items-center gap-3 rounded-2xl border border-line bg-surface px-[18px] py-3 shadow-float [--i:7] sm:start-6 sm:max-w-[calc(100%-3rem)] ltr:origin-bottom-left rtl:origin-bottom-right">
                             <span className="grid size-10 shrink-0 place-items-center rounded-btn bg-secondary-soft text-secondary">
                                 <Check className="size-5" strokeWidth={2.4} aria-hidden="true" />
                             </span>

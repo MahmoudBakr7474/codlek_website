@@ -35,14 +35,14 @@ export function PageHero({
                 <nav aria-label={t('breadcrumb')} className="text-sm text-ink-muted">
                     <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
                         <li className="shrink-0">
-                            <Link href={href(locale, 'home')} className="-my-2.5 inline-flex items-center gap-1.5 rounded-md py-2.5 transition-colors hover:text-primary-ink">
+                            <Link href={href(locale, 'home')} className="-my-2.5 inline-flex items-center gap-1.5 rounded-md py-2.5 transition-colors hover:text-primary-ink active:text-primary-ink">
                                 <House className="size-4 shrink-0" aria-hidden="true" />
                                 {t('nav.home')}
                             </Link>
                         </li>
                         {crumbs.map((crumb) => (
                             <Crumb key={crumb.href}>
-                                <Link href={crumb.href} className="-my-2.5 inline-block rounded-md py-2.5 transition-colors hover:text-primary-ink">
+                                <Link href={crumb.href} className="-my-2.5 inline-block rounded-md py-2.5 transition-colors hover:text-primary-ink active:text-primary-ink">
                                     {crumb.label}
                                 </Link>
                             </Crumb>
@@ -56,11 +56,12 @@ export function PageHero({
                     </ol>
                 </nav>
 
-                <div className="mt-9 max-w-3xl sm:mt-11" data-reveal>
-                    {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
-                    <h1 className={cx('text-[2rem] leading-[1.3] font-extrabold sm:text-[2.5rem] lg:text-5xl', eyebrow && 'mt-4')}>{title}</h1>
-                    {lead && <p className="mt-4 max-w-[640px] text-[17px] text-ink-muted sm:text-[19px]">{lead}</p>}
-                    {children}
+                {/* .enter: eyebrow, title, lead and extras rise in order, in CSS (globals.css). */}
+                <div className="mt-9 max-w-3xl sm:mt-11">
+                    {eyebrow && <Eyebrow className="enter [--i:0]">{eyebrow}</Eyebrow>}
+                    <h1 className={cx('enter text-[2rem] leading-[1.3] font-extrabold [--i:1] sm:text-[2.5rem] lg:text-5xl', eyebrow && 'mt-4')}>{title}</h1>
+                    {lead && <p className="enter mt-4 max-w-[640px] text-[17px] text-ink-muted [--i:2] sm:text-[19px]">{lead}</p>}
+                    {children && <div className="enter [--i:3]">{children}</div>}
                 </div>
             </div>
         </section>

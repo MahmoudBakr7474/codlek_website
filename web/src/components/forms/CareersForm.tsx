@@ -2,12 +2,12 @@
 
 import Link from 'next/link';
 import { useRef, useState } from 'react';
-import { FileCheck, FileUp, Send } from 'lucide-react';
+import { FileCheck, FileUp, LoaderCircle, Send } from 'lucide-react';
 import type { Texts } from '@/lib/i18n';
 import { cx } from '@/lib/cx';
 import { Button } from '../ui/Button';
 import { Field, FieldError } from './Field';
-import { ErrorSummary, Toast } from './FormFeedback';
+import { ErrorSummary, focusFirstError, Toast } from './FormFeedback';
 import { submitForm } from './submit';
 
 const MAX_CV = 5 * 1024 * 1024;
@@ -27,6 +27,7 @@ export function CareersForm({ locale, texts, jobs, selectedJob, privacyHref }: P
     const [sending, setSending] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [summary, setSummary] = useState<string | null>(null);
+    const [attempt, setAttempt] = useState(0);
     const [done, setDone] = useState<{ title: string; text: string } | null>(null);
     const [fileName, setFileName] = useState('');
     const [fileError, setFileError] = useState('');
@@ -70,12 +71,14 @@ export function CareersForm({ locale, texts, jobs, selectedJob, privacyHref }: P
         } else {
             setErrors(result.errors);
             setSummary(result.message);
+            setAttempt((n) => n + 1);
+            focusFirstError(form.current);
         }
     }
 
     return (
         <>
-            {summary && <ErrorSummary message={summary} />}
+            {summary && <ErrorSummary key={attempt} message={summary} />}
 
             <form ref={form} onSubmit={send} className="mt-7 space-y-5" noValidate>
                 <div className="hidden" aria-hidden="true">
@@ -151,7 +154,14 @@ export function CareersForm({ locale, texts, jobs, selectedJob, privacyHref }: P
                 <Field name="message" type="textarea" rows={4} label={t('forms.labels.about_you')} placeholder={t('forms.placeholders.about_you')} error={errors.message} />
 
                 <div className="space-y-3 border-t border-line pt-6">
-                    <Button type="submit" size="lg" icon={Send} disabled={sending} aria-busy={sending} className="w-full rtl:[&>svg:first-child]:-scale-x-100">
+                    <Button
+                        type="submit"
+                        size="lg"
+                        icon={sending ? LoaderCircle : Send}
+                        disabled={sending}
+                        aria-busy={sending}
+                        className={cx('w-full', sending ? '[&>svg:first-child]:animate-spin' : 'rtl:[&>svg:first-child]:-scale-x-100')}
+                    >
                         {sending ? t('forms.sending') : t('forms.submit_apply')}
                     </Button>
                     <p className="text-center text-[13px] text-ink-muted">

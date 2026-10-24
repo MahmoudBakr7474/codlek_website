@@ -32,13 +32,34 @@ export function Reveal() {
             return;
         }
 
+        // Reading order of the blocks that enter together: top to bottom, then along the line
+        // (right to left in Arabic). Uses the rects the observer has already measured.
+        const order = (a: IntersectionObserverEntry, b: IntersectionObserverEntry) => {
+            const dy = a.boundingClientRect.top - b.boundingClientRect.top;
+            if (Math.abs(dy) > 8) return dy;
+            const rtl = a.target.closest('[dir]')?.getAttribute('dir') === 'rtl';
+            return rtl ? b.boundingClientRect.right - a.boundingClientRect.right : a.boundingClientRect.left - b.boundingClientRect.left;
+        };
+
         const observer = new IntersectionObserver(
             (entries) => {
-                for (const entry of entries) {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                        observer.unobserve(entry.target);
-                    }
+                // Blocks arriving together cascade 50ms apart (at most 300ms); one arriving
+                // alone shows at once. A delay set in the markup (fixed pairings) is kept.
+                let k = 0;
+                const show = (el: HTMLElement) => {
+                    if (el.classList.contains('is-visible')) return;
+                    if (!el.style.getPropertyValue('--reveal-delay')) el.style.setProperty('--reveal-delay', `${Math.min(k, 6) * 50}ms`);
+                    k++;
+                    el.classList.add('is-visible');
+                    observer.unobserve(el);
+                };
+
+                for (const entry of entries.filter((e) => e.isIntersecting).sort(order)) {
+                    show(entry.target as HTMLElement);
+                    // A swipe row clips its cards, so the observer never sees the ones past the
+                    // edge: show the whole row with its first card, or they would be blank when swiped in.
+                    const row = entry.target.closest<HTMLElement>('[data-reveal-row]');
+                    if (row && row.scrollWidth > row.clientWidth) row.querySelectorAll<HTMLElement>('[data-reveal]:not(.is-visible)').forEach(show);
                 }
             },
             { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
@@ -56,10 +77,15 @@ export function Reveal() {
     }, [pathname]);
 
     useEffect(() => {
+        // iOS Safari applies :active (the press feedback) only once the page listens to touches.
+        const noop = () => {};
+        document.addEventListener('touchstart', noop, { passive: true });
+
         const on = () => document.documentElement.classList.add('smooth-scroll');
         const afterFonts = () => document.fonts.ready.then(on, on);
         if (document.readyState === 'complete') afterFonts();
         else window.addEventListener('load', afterFonts, { once: true });
+        return () => document.removeEventListener('touchstart', noop);
     }, []);
 
     return null;

@@ -160,8 +160,9 @@
 /* The floating contact button (bottom start corner) would sit on the footer's
    last row at the end of the page: leave room under it while the button is on
    the page. Keyboard focus scrolling also keeps clear of it. From 1400px the
-   button has its own space beside the content. */
-@media (width < 1400px) {
+   button has its own space beside the content. Phones have the action bar
+   instead (MobileActionBar), which steps aside over the footer. */
+@media (width >= 40rem) and (width < 1400px) {
     body:has(#floating-contact) [data-footer-end] {
         padding-bottom: 6rem;
     }
@@ -171,16 +172,30 @@
     }
 }
 
-/* Client screenshots and the bundled illustrations are mostly white or light
-   grey: on dark surfaces they would be the brightest thing on the page. Dim
-   them, and show them at full brightness on hover. */
-.dark .shot {
-    filter: brightness(0.8) saturate(0.9);
-    transition: filter 0.3s var(--ease-out-soft);
+@media (width < 40rem) {
+    html:has(#action-bar) {
+        scroll-padding-bottom: 6rem;
+    }
 }
 
-.dark .group:hover .shot {
-    filter: none;
+html[data-menu-open] #action-bar {
+    visibility: hidden;
+    opacity: 0;
+}
+
+/* Client screenshots and the bundled illustrations are mostly white or light
+   grey: on dark surfaces they would be the brightest thing on the page. Dim
+   them, and show them at full brightness on hover (mouse only: a tap would
+   leave the hover stuck on a phone). */
+.dark .shot {
+    filter: brightness(0.8) saturate(0.9);
+    transition: filter 0.3s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .dark .group:hover .shot {
+        filter: none;
+    }
 }
 
 @theme inline {
@@ -269,7 +284,10 @@
     --text-5xl--line-height: 1.3;
     --text-6xl--line-height: 1.25;
 
-    --ease-out-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
+    /* Strong curves for UI motion (also Tailwind's ease-out / ease-in-out): ease-out
+       for things entering or answering a press, ease-in-out for moves on screen. */
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 @layer base {
@@ -474,14 +492,16 @@
     animation: none;
 }
 
+/* --reveal-delay comes from Reveal.tsx: items that enter the screen together
+   cascade in reading order, 50ms apart; an item arriving alone shows at once. */
 .js [data-reveal].is-visible {
-    animation: reveal-in 0.6s var(--ease-out-soft) var(--reveal-delay, 0ms) backwards;
+    animation: reveal-in 500ms var(--ease-out) var(--reveal-delay, 0ms) backwards;
 }
 
 @keyframes reveal-in {
     from {
         opacity: 0;
-        transform: translateY(12px);
+        transform: translateY(16px);
     }
 }
 
@@ -505,5 +525,130 @@
     .js [data-reveal] {
         opacity: 1 !important;
         animation: none !important;
+    }
+}
+
+/* First screen: the hero's lines rise in order (--i), in plain CSS so they never
+   wait for React. While the page loader's cover is up the animations hold at
+   their first frame (and their delay), and they play as the cover lifts. Inside
+   no-preference: the global reduce rule shortens durations but not delays. */
+@keyframes enter {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+}
+
+@keyframes enter-media {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.98);
+    }
+}
+
+@keyframes enter-pop {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .enter {
+        animation: enter 500ms var(--ease-out) calc(var(--i, 0) * 60ms) backwards;
+    }
+
+    .enter-media {
+        animation-name: enter-media;
+        animation-duration: 700ms;
+    }
+
+    .enter-pop {
+        animation-name: enter-pop;
+        animation-duration: 400ms;
+    }
+
+    .is-loading:not(.is-loaded) .enter {
+        animation-play-state: paused;
+    }
+}
+
+@media print {
+    .enter {
+        animation: none !important;
+    }
+}
+
+/* Phone / tablet menu: the rows unroll one after another when it opens (pairs
+   together in the two-column layout) and all leave at once when it closes.
+   Transitions, not keyframes, so a quick open-close-open picks up where it is. */
+@media (prefers-reduced-motion: no-preference) {
+    #mobile-nav :is(li, [data-menu-cta]) {
+        opacity: 0;
+        translate: 0 -6px;
+        transition:
+            opacity 150ms var(--ease-out),
+            translate 150ms var(--ease-out);
+    }
+
+    #mobile-nav[data-open] :is(li, [data-menu-cta]) {
+        opacity: 1;
+        translate: none;
+        transition-duration: 250ms;
+        transition-delay: calc(40ms + var(--i, 0) * 25ms);
+    }
+
+    @media (width >= 40rem) {
+        #mobile-nav[data-open] li {
+            transition-delay: calc(40ms + var(--row, 0) * 25ms);
+        }
+    }
+}
+
+/* Phones: each connector of the journey timeline fills with light as its step
+   scrolls up to mid-screen. Driven by the visitor's own scroll; where scroll
+   timelines aren't supported the line just stays as it is. */
+@supports (animation-timeline: view()) {
+    @media (width < 48rem) and (prefers-reduced-motion: no-preference) {
+        [data-journey] li {
+            view-timeline: --step block;
+        }
+
+        [data-journey] li:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            z-index: 1;
+            inset-inline-start: 21px;
+            top: 2.75rem;
+            bottom: 0;
+            width: 2px;
+            background: var(--navy-glow);
+            transform-origin: top;
+            animation: journey-fill linear both;
+            animation-timeline: --step;
+            animation-range: contain 0% contain 50%;
+        }
+    }
+}
+
+@keyframes journey-fill {
+    from {
+        transform: scaleY(0);
+    }
+}
+
+/* About: the satisfaction meter fills from the start side as its card appears.
+   Keyed on .reveal-ready, so without the reveal script the meter is simply full. */
+.meter-fill {
+    transform: scaleX(var(--meter, 1));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .reveal-ready [data-reveal]:not(.is-visible) .meter-fill {
+        transform: scaleX(0);
+    }
+
+    .reveal-ready [data-reveal].is-visible .meter-fill {
+        transition: transform 900ms var(--ease-out) 250ms;
     }
 }

@@ -11,9 +11,10 @@ const SHOW_AFTER = 240;
 export type QuickLink = { href: string; label: string; kind: 'whatsapp' | 'phone' | string };
 
 /*
- * Quick contact button (bottom start corner). The toggle comes first in the DOM,
- * so Tab moves from it straight into the links; flex-col-reverse puts the links
- * visually above it. Escape closes and hands focus back.
+ * Quick contact button (bottom start corner), from `sm`: phones have the action
+ * bar instead (MobileActionBar). The toggle comes first in the DOM, so Tab moves
+ * from it straight into the links; flex-col-reverse puts the links visually above
+ * it. Escape closes and hands focus back.
  */
 export function FloatingContact({ links, toggleLabel }: { links: QuickLink[]; toggleLabel: string }) {
     const [open, setOpen] = useState(false);
@@ -65,7 +66,8 @@ export function FloatingContact({ links, toggleLabel }: { links: QuickLink[]; to
                 if (!root.current?.contains(e.relatedTarget as Node | null)) setOpen(false);
             }}
             className={cx(
-                'fixed start-4 bottom-5 z-40 flex flex-col-reverse items-start gap-3 transition duration-200 ease-out sm:start-6 sm:bottom-6',
+                // visibility is in the list so the fade-out plays before the button leaves.
+                'fixed start-4 bottom-5 z-40 flex flex-col-reverse items-start gap-3 transition-[opacity,translate,visibility] duration-200 ease-out max-sm:hidden sm:start-6 sm:bottom-6',
                 visible ? 'translate-y-0 opacity-100' : 'pointer-events-none invisible translate-y-2 opacity-0',
             )}
         >
@@ -95,7 +97,7 @@ export function FloatingContact({ links, toggleLabel }: { links: QuickLink[]; to
                             key={link.href}
                             href={link.href}
                             {...(external ? { target: '_blank', rel: 'noopener' } : {})}
-                            className="flex items-center gap-3 rounded-btn px-2.5 py-2 text-[15px] font-bold text-ink transition-colors hover:bg-surface-chip"
+                            className="flex items-center gap-3 rounded-btn px-2.5 py-2 text-[15px] font-bold text-ink transition-colors hover:bg-surface-chip active:bg-surface-chip"
                         >
                             <span className={cx('grid size-9 shrink-0 place-items-center rounded-[10px]', tile)}>
                                 {link.kind === 'whatsapp' ? (

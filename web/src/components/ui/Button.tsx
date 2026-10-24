@@ -23,8 +23,9 @@ type Look = {
 };
 
 export function buttonClasses(variant: Variant = 'primary', size: Size = 'md'): { box: string; glyph: string } {
+    // A press sinks the button in 100ms and lets it back over 200ms (dims instead with reduced motion).
     const base =
-        'inline-flex select-none items-center justify-center whitespace-nowrap transition-[background-color,color,border-color,box-shadow,transform] duration-200 active:translate-y-px disabled:pointer-events-none disabled:opacity-60';
+        'inline-flex select-none items-center justify-center whitespace-nowrap transition-[background-color,color,border-color,box-shadow,scale] duration-200 ease-out active:duration-100 motion-safe:active:scale-[0.97] motion-reduce:active:opacity-85 disabled:pointer-events-none disabled:opacity-60';
 
     const variants: Record<Variant, string> = {
         primary: 'bg-primary font-bold text-on-primary hover:bg-primary-hover' + (size === 'nav' ? '' : ' shadow-primary'),

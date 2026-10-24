@@ -17,16 +17,17 @@ export function ProjectCard({
     project,
     locale,
     t,
-    delay = 0,
     heading: Heading = 'h3',
     eager = false,
+    className,
 }: {
     project: ProjectData;
     locale: Locale;
     t: Translate;
-    delay?: number;
     heading?: 'h2' | 'h3';
     eager?: boolean;
+    /** Placement from the caller (a swipe row's item width); must not clash with the card's own classes. */
+    className?: string;
 }) {
     const linkable = project.isLinkable;
     const titleDir = dirOf(project.title, locale);
@@ -38,10 +39,10 @@ export function ProjectCard({
             className={cx(
                 'group relative flex flex-col overflow-hidden rounded-card border border-line bg-surface',
                 linkable &&
-                    'transition duration-300 hover:-translate-y-1 hover:border-primary-line hover:shadow-float has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-[3px] has-[a:focus-visible]:outline-primary-ink',
+                    'transition duration-300 hover:-translate-y-1 hover:border-primary-line hover:shadow-float active:border-primary-line active:duration-150 motion-safe:active:scale-[0.985] has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-[3px] has-[a:focus-visible]:outline-primary-ink',
+                className,
             )}
             data-reveal
-            style={{ '--reveal-delay': `${delay}ms` } as React.CSSProperties}
         >
             <div className="bg-surface-sunken px-3.5 pt-3.5">
                 <div className="overflow-hidden rounded-t-xl border border-b-0 border-line bg-surface">

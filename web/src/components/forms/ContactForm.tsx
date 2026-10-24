@@ -2,11 +2,12 @@
 
 import Link from 'next/link';
 import { useRef, useState } from 'react';
-import { Send } from 'lucide-react';
+import { LoaderCircle, Send } from 'lucide-react';
 import type { Texts } from '@/lib/i18n';
+import { cx } from '@/lib/cx';
 import { Button } from '../ui/Button';
 import { Field } from './Field';
-import { ErrorSummary, Toast } from './FormFeedback';
+import { ErrorSummary, focusFirstError, Toast } from './FormFeedback';
 import { submitForm } from './submit';
 
 type Props = {
@@ -23,6 +24,7 @@ export function ContactForm({ locale, texts, services, preselected, privacyHref 
     const [sending, setSending] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [summary, setSummary] = useState<string | null>(null);
+    const [attempt, setAttempt] = useState(0);
     const [done, setDone] = useState<{ title: string; text: string } | null>(null);
 
     async function send(event: React.FormEvent<HTMLFormElement>) {
@@ -40,12 +42,14 @@ export function ContactForm({ locale, texts, services, preselected, privacyHref 
         } else {
             setErrors(result.errors);
             setSummary(result.message);
+            setAttempt((n) => n + 1);
+            focusFirstError(form.current);
         }
     }
 
     return (
         <>
-            {summary && <ErrorSummary message={summary} />}
+            {summary && <ErrorSummary key={attempt} message={summary} />}
 
             <form ref={form} onSubmit={send} className="mt-8 space-y-5" noValidate>
                 {/* Bots fill this field; people never see it. */}
@@ -91,8 +95,15 @@ export function ContactForm({ locale, texts, services, preselected, privacyHref 
                         </Link>
                         .
                     </p>
-                    {/* The paper plane points the way the text reads: mirrored in RTL. */}
-                    <Button type="submit" size="lg" icon={Send} disabled={sending} aria-busy={sending} className="w-full shrink-0 sm:w-auto sm:min-w-48 rtl:[&>svg:first-child]:-scale-x-100">
+                    {/* The paper plane points the way the text reads (mirrored in RTL); a spinner while sending. */}
+                    <Button
+                        type="submit"
+                        size="lg"
+                        icon={sending ? LoaderCircle : Send}
+                        disabled={sending}
+                        aria-busy={sending}
+                        className={cx('w-full shrink-0 sm:w-auto sm:min-w-48', sending ? '[&>svg:first-child]:animate-spin' : 'rtl:[&>svg:first-child]:-scale-x-100')}
+                    >
                         {sending ? t('forms.sending') : t('forms.submit_contact')}
                     </Button>
                 </div>

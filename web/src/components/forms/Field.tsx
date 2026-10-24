@@ -40,11 +40,28 @@ type FieldProps = {
     className?: string;
 };
 
+/** A phone number inside a hint ("e.g. +966 5x xxx xxxx"): kept in one piece, left to right. */
+const PHONE = /(‎?\+\d[\dx ]*[\dx])/;
+
+function Hint({ text }: { text: string }) {
+    return text.split(PHONE).map((part, i) =>
+        i % 2 === 1 ? (
+            <bdi key={i} dir="ltr" className="whitespace-nowrap">
+                {part}
+            </bdi>
+        ) : (
+            part
+        ),
+    );
+}
+
 export function Field({ name, label, type = 'text', required, placeholder, hint, error, defaultValue, options = [], rows = 5, ltr, autoComplete, className }: FieldProps) {
     const id = `f-${name}`;
     const invalid = Boolean(error);
     const describedBy = [invalid && `${id}-error`, hint && `${id}-hint`].filter(Boolean).join(' ') || undefined;
     const common = { id, name, required, 'aria-invalid': invalid || undefined, 'aria-describedby': describedBy };
+    // Addresses and numbers: no capital first letter, autocorrect or spell check from the phone's keyboard.
+    const literal = type === 'email' || type === 'url' || type === 'tel' ? { spellCheck: false, autoCapitalize: 'off', autoCorrect: 'off' } : {};
 
     return (
         <div className={className}>
@@ -78,6 +95,7 @@ export function Field({ name, label, type = 'text', required, placeholder, hint,
             ) : (
                 <input
                     {...common}
+                    {...literal}
                     type={type}
                     placeholder={placeholder}
                     defaultValue={defaultValue}
@@ -89,7 +107,7 @@ export function Field({ name, label, type = 'text', required, placeholder, hint,
 
             {hint && (
                 <p id={`${id}-hint`} className="mt-2 text-sm text-ink-muted">
-                    {hint}
+                    <Hint text={hint} />
                 </p>
             )}
 

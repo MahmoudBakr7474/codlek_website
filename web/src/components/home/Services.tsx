@@ -7,6 +7,7 @@ import { cx } from '@/lib/cx';
 import { NamedIconTile } from '../ui/NamedIconTile';
 import { PopularBadge } from '../ui/PopularBadge';
 import { SectionHeader } from '../ui/SectionHeader';
+import { snapItem, snapRow } from '../ui/snap-row';
 
 /*
  * Service cards. Each card is one link: "request this service" opens the contact
@@ -26,24 +27,16 @@ export function Services({ services, locale, t, white }: { services: ServiceData
             <div className="shell flex flex-col gap-10 sm:gap-12">
                 <SectionHeader eyebrow={t('home.services.eyebrow')} title={t('home.services.title')} lead={t('home.services.lead')} />
 
-                <div
-                    className={cx(
-                        'sm:grid sm:gap-6',
-                        columns,
-                        swipe
-                            ? '-mx-4 -my-2 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 py-2 [scrollbar-width:none] sm:m-0 sm:snap-none sm:overflow-visible sm:p-0 [&::-webkit-scrollbar]:hidden'
-                            : 'grid gap-6',
-                    )}
-                >
-                    {services.map((service, i) => (
+                <div className={swipe ? cx(snapRow, 'sm:gap-6', columns) : cx('grid gap-6', columns)} data-reveal-row={swipe || undefined}>
+                    {services.map((service) => (
                         <article
                             key={service.key}
                             className={cx(
-                                'group relative flex flex-col overflow-hidden rounded-card border border-line bg-surface shadow-card transition duration-300 hover:-translate-y-1 hover:border-primary-line hover:shadow-float has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-[3px] has-[a:focus-visible]:outline-primary-ink',
-                                swipe && 'w-[82%] shrink-0 snap-start sm:w-auto',
+                                // active: touch has no hover, so a press answers with a slight sink and the blue border.
+                                'group relative flex flex-col overflow-hidden rounded-card border border-line bg-surface shadow-card transition duration-300 hover:-translate-y-1 hover:border-primary-line hover:shadow-float active:border-primary-line active:duration-150 motion-safe:active:scale-[0.985] has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-[3px] has-[a:focus-visible]:outline-primary-ink',
+                                swipe && cx(snapItem, 'w-[82%]'),
                             )}
                             data-reveal
-                            style={{ '--reveal-delay': `${(i % 4) * 70}ms` } as React.CSSProperties}
                         >
                             {/* Phones: a shorter picture, so the swipe row stays one screen tall. */}
                             <div className="relative aspect-[2/1] border-b border-line bg-surface-sunken sm:aspect-[3/2]">

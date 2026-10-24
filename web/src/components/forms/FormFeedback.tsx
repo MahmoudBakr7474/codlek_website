@@ -6,8 +6,21 @@ import { CircleAlert, CircleCheck, X } from 'lucide-react';
 /*
  * The summary above a form with errors. It takes focus when it appears, so screen
  * readers read it (an alert already on the page is not announced); the next Tab goes
- * into the first field.
+ * into the first field. The forms remount it on every failed submit (key) and then
+ * move focus to the first wrong field (focusFirstError), which scrolls it into view:
+ * on a phone the summary is a screen above the submit button.
  */
+export function focusFirstError(form: HTMLFormElement | null) {
+    // Two frames: after React has rendered the errors and the summary has taken focus.
+    requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+            const field = form?.querySelector<HTMLElement>('[aria-invalid="true"]');
+            if (field) field.focus();
+            else document.querySelector<HTMLElement>('[role="alert"]')?.scrollIntoView({ block: 'center' });
+        }),
+    );
+}
+
 export function ErrorSummary({ message }: { message: string }) {
     const box = useRef<HTMLDivElement>(null);
     useEffect(() => box.current?.focus({ preventScroll: true }), [message]);
@@ -45,7 +58,8 @@ export function Toast({ title, text, closeLabel, onClose }: { title: string; tex
             </p>
             <div className="fixed inset-x-4 bottom-24 z-50 mx-auto max-w-md sm:bottom-8">
                 {/* Dark: a lighter panel with a stronger edge, so it stands off the page under it. */}
-                <div className="flex items-start gap-3 rounded-2xl border border-line bg-surface p-4 shadow-float dark:border-line-strong dark:bg-surface-muted">
+                {/* starting: slides up once when it appears (@starting-style; older browsers just show it). */}
+                <div className="flex items-start gap-3 rounded-2xl border border-line bg-surface p-4 shadow-float transition-[opacity,translate] duration-300 ease-out starting:translate-y-4 starting:opacity-0 dark:border-line-strong dark:bg-surface-muted">
                     <span className="grid size-10 shrink-0 place-items-center rounded-btn bg-secondary-soft text-secondary">
                         <CircleCheck className="size-5" aria-hidden="true" />
                     </span>

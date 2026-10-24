@@ -36,9 +36,14 @@ export type HeaderLabels = {
     home: string;
 };
 
-/** The current path without the /en prefix ("/" for home). */
+/**
+ * The current path without its locale prefix ("/" for home). Arabic URLs have none, but
+ * proxy.ts rewrites them to /ar/..., and that is what usePathname() reports while the page
+ * is prerendered: without stripping it, the language link pointed to /en/ar/... and no nav
+ * link was marked current on Arabic pages.
+ */
 function pagePath(pathname: string): string {
-    const path = pathname.replace(/^\/en(?=\/|$)/, '');
+    const path = pathname.replace(/^\/(?:en|ar)(?=\/|$)/, '');
     return path === '' ? '/' : path;
 }
 
@@ -101,6 +106,8 @@ export function Header({ locale, labels }: { locale: Locale; labels: HeaderLabel
 
     useEffect(() => {
         document.documentElement.classList.toggle('overflow-hidden', open);
+        // The phone action bar steps aside while the menu is open.
+        document.documentElement.toggleAttribute('data-menu-open', open);
     }, [open]);
 
     // The phone / tablet menu closes when the window grows to the desktop layout.
@@ -129,8 +136,9 @@ export function Header({ locale, labels }: { locale: Locale; labels: HeaderLabel
         return target === '/' ? path === '/' : path === target || path.startsWith(`${target}/`);
     };
 
+    // Touch has no hover, so presses answer with a small scale and a tint.
     const square =
-        'grid size-11 shrink-0 place-items-center rounded-btn border border-line bg-surface text-ink-soft transition-colors hover:border-line-strong hover:bg-surface-chip hover:text-ink';
+        'grid size-11 shrink-0 place-items-center rounded-btn border border-line bg-surface text-ink-soft transition-[color,background-color,border-color,scale] duration-150 ease-out hover:border-line-strong hover:bg-surface-chip hover:text-ink active:bg-surface-chip motion-safe:active:scale-[0.96]';
 
     return (
         <header
@@ -183,7 +191,7 @@ export function Header({ locale, labels }: { locale: Locale; labels: HeaderLabel
                         hrefLang={otherLocale}
                         lang={otherLocale}
                         aria-label={labels.langSwitchLabel}
-                        className="inline-flex h-11 shrink-0 items-center rounded-btn border border-line bg-surface px-3 text-sm font-bold whitespace-nowrap text-ink-soft transition-colors hover:border-line-strong hover:bg-surface-chip hover:text-ink xl:px-3.5"
+                        className="inline-flex h-11 shrink-0 items-center rounded-btn border border-line bg-surface px-3 text-sm font-bold whitespace-nowrap text-ink-soft transition-[color,background-color,border-color,scale] duration-150 ease-out hover:border-line-strong hover:bg-surface-chip hover:text-ink active:bg-surface-chip motion-safe:active:scale-[0.96] xl:px-3.5"
                     >
                         {labels.langSwitch}
                     </a>
@@ -204,7 +212,21 @@ export function Header({ locale, labels }: { locale: Locale; labels: HeaderLabel
                         aria-controls="mobile-nav"
                         aria-label={open ? labels.close : labels.open}
                     >
-                        {open ? <X className="size-[22px]" aria-hidden="true" /> : <Menu className="size-[22px]" aria-hidden="true" />}
+                        {/* Both icons share the cell: the bars turn into the X and back. */}
+                        <Menu
+                            className={cx(
+                                'col-start-1 row-start-1 size-[22px] transition-[opacity,scale,rotate] duration-200 ease-out motion-reduce:rotate-0 motion-reduce:scale-100',
+                                open && '-rotate-45 scale-75 opacity-0',
+                            )}
+                            aria-hidden="true"
+                        />
+                        <X
+                            className={cx(
+                                'col-start-1 row-start-1 size-[22px] transition-[opacity,scale,rotate] duration-200 ease-out motion-reduce:rotate-0 motion-reduce:scale-100',
+                                !open && 'rotate-45 scale-75 opacity-0',
+                            )}
+                            aria-hidden="true"
+                        />
                     </button>
                 </div>
             </div>
@@ -214,31 +236,36 @@ export function Header({ locale, labels }: { locale: Locale; labels: HeaderLabel
                 onClick={() => setOpen(false)}
                 aria-hidden="true"
                 className={cx(
-                    'absolute inset-x-0 top-full h-dvh bg-navy/40 transition-opacity duration-200 lg:hidden dark:bg-black/60',
-                    open ? 'opacity-100' : 'pointer-events-none invisible opacity-0',
+                    // visibility is in the list so the closing fade plays before the layer goes.
+                    'absolute inset-x-0 top-full h-dvh bg-navy/40 transition-[opacity,visibility] ease-out lg:hidden dark:bg-black/60',
+                    open ? 'opacity-100 duration-200' : 'pointer-events-none invisible opacity-0 duration-150',
                 )}
             />
 
             <div
                 id="mobile-nav"
+                data-open={open ? '' : undefined}
                 className={cx(
-                    'absolute inset-x-0 top-full border-b border-line bg-surface shadow-float transition duration-200 ease-out lg:hidden',
-                    open ? 'translate-y-0 opacity-100' : 'pointer-events-none invisible -translate-y-2 opacity-0',
+                    'absolute inset-x-0 top-full border-b border-line bg-surface shadow-float transition-[opacity,translate,visibility] ease-out lg:hidden',
+                    open ? 'translate-y-0 opacity-100 duration-200' : 'pointer-events-none invisible -translate-y-2 opacity-0 duration-150',
                 )}
             >
                 <nav className="shell max-h-[calc(100dvh-4.5rem)] overflow-y-auto overscroll-contain pt-3 pb-5" aria-label={labels.navLabel}>
                     <ul className="grid gap-1 sm:grid-cols-2 sm:gap-x-3 sm:gap-y-1.5">
-                        {nav.map(({ page, icon }) => {
+                        {nav.map(({ page, icon }, i) => {
                             const active = isActive(page);
                             return (
-                                <li key={page}>
+                                // --i / --row: the rows unroll one after another (globals.css, #mobile-nav).
+                                <li key={page} style={{ '--i': i, '--row': Math.floor(i / 2) } as React.CSSProperties}>
                                     <Link
                                         href={href(locale, page)}
                                         onClick={() => setOpen(false)}
                                         aria-current={path === (pages[page] || '/') ? 'page' : undefined}
                                         className={cx(
                                             'flex items-center gap-3 rounded-btn p-2 pe-3 text-base transition-colors',
-                                            active ? 'bg-primary-soft font-bold text-primary-ink' : 'font-semibold text-ink hover:bg-surface-chip',
+                                            active
+                                                ? 'bg-primary-soft font-bold text-primary-ink active:bg-primary-line/60'
+                                                : 'font-semibold text-ink hover:bg-surface-chip active:bg-surface-chip',
                                         )}
                                     >
                                         <IconTile icon={icon} size="sm" tone={active ? 'solid' : 'blue'} />
@@ -250,7 +277,7 @@ export function Header({ locale, labels }: { locale: Locale; labels: HeaderLabel
                         })}
                     </ul>
 
-                    <div className="mt-4 flex flex-col gap-3 border-t border-line pt-4 sm:hidden">
+                    <div data-menu-cta style={{ '--i': nav.length } as React.CSSProperties} className="mt-4 flex flex-col gap-3 border-t border-line pt-4 sm:hidden">
                         <ButtonLink href={href(locale, 'contact')} size="lg" iconEnd={ArrowRight} className="w-full" onClick={() => setOpen(false)}>
                             {labels.startProject}
                         </ButtonLink>
@@ -259,7 +286,7 @@ export function Header({ locale, labels }: { locale: Locale; labels: HeaderLabel
                             type="button"
                             onClick={toggle}
                             aria-pressed={dark}
-                            className="inline-flex h-12 items-center justify-center gap-2 rounded-btn border border-line text-[15px] font-bold text-ink-soft transition-colors hover:bg-surface-chip min-[360px]:hidden"
+                            className="inline-flex h-12 items-center justify-center gap-2 rounded-btn border border-line text-[15px] font-bold text-ink-soft transition-colors hover:bg-surface-chip active:bg-surface-chip min-[360px]:hidden"
                         >
                             <Moon className="size-5 dark:hidden" aria-hidden="true" />
                             <Sun className="hidden size-5 dark:block" aria-hidden="true" />
