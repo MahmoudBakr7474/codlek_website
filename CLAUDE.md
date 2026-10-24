@@ -59,6 +59,10 @@ Rewrite of the Codlek company site from Laravel. The plan, decisions and phase s
   personal data (names, emails, phones, CVs).
 
 ## Git
-- This repo is **public** (`github.com/MahmoudBakr7474/Codlek-website`): no secrets, connection strings with
-  passwords, `.env` files, databases or uploads in commits. Production settings go in environment variables.
+- The one repo is `github.com/mahmoudbakr7474/codlek_website` (private), the one Vercel deploys `main` from.
+  The old public `Codlek-website` is retired; its history is the tag `archive/codlek-website`. Still keep secrets,
+  connection strings with passwords, `.env` files, databases and uploads out of commits: production settings go
+  in environment variables.
+- Vercel (Hobby, private repo) only deploys commits whose author is the owner's GitHub account (MahmoudBakr7474);
+  a commit from another account shows as "Blocked" in Vercel's deployments.
 - Commit at the end of each phase; push only when the owner agrees.

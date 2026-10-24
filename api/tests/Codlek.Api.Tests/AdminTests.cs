@@ -231,6 +231,18 @@ public class AdminTests(ApiFactory factory)
     }
 
     [Fact]
+    public async Task Settings_without_values_are_refused_not_a_server_error()
+    {
+        var admin = await factory.AdminAsync();
+
+        var response = await admin.PutAsJsonAsync("/api/admin/settings", new { settings = new { } });
+        var texts = await admin.PutAsJsonAsync("/api/admin/texts", new Dictionary<string, object?> { ["ar"] = null });
+
+        Assert.Equal(HttpStatusCode.UnprocessableEntity, response.StatusCode);
+        Assert.Equal(HttpStatusCode.NoContent, texts.StatusCode);
+    }
+
+    [Fact]
     public async Task Contact_details_are_checked()
     {
         var admin = await factory.AdminAsync();

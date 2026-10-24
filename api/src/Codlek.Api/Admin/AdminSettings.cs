@@ -55,6 +55,12 @@ public static partial class AdminSettings
     private static async Task<IResult> PutSettings(SettingsInput input, SettingsStore settings, SiteContentLoader loader, SiteData data, CodlekDbContext db, ImageStore images, CancellationToken ct)
     {
         var check = new AdminValidator();
+        if (input.Values is null)
+        {
+            check.Fail("values", "مفيش إعدادات اتبعتت للحفظ.");
+            return check.Problem();
+        }
+
         var site = await loader.LoadAsync("ar", ct);
         var values = new Dictionary<string, JsonNode?>();
 
@@ -171,7 +177,7 @@ public static partial class AdminSettings
                 saved[locale] = stored;
             }
 
-            foreach (var (key, raw) in lines)
+            foreach (var (key, raw) in lines ?? [])
             {
                 if (!data.Texts[locale].TryGetValue(key, out var original))
                 {

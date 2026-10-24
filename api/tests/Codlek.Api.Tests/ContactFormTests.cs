@@ -26,7 +26,7 @@ public class ContactFormTests(ApiFactory factory)
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var body = await response.Content.ReadFromJsonAsync<JsonElement>();
-        Assert.Equal("Your message has been sent!", body.GetProperty("title").GetString());
+        Assert.Equal("Your message has been received", body.GetProperty("title").GetString());
 
         var saved = await factory.WithDbAsync(db => db.ContactMessages.SingleAsync(m => m.Email == email));
         Assert.Equal("Mona Ali", saved.Name);

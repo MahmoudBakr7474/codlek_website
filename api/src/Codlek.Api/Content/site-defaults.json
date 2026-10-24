@@ -1,6 +1,7 @@
 {
     "home.hero_stats": [
         {
+            "icon": "star",
             "value": "4.9/5",
             "label": {
                 "ar": "تقييم العملاء",
@@ -8,13 +9,15 @@
             }
         },
         {
+            "icon": "rocket",
             "value": "500+",
             "label": {
-                "ar": "مشروع ناجح",
-                "en": "Successful projects"
+                "ar": "مشروع منفّذ",
+                "en": "Projects delivered"
             }
         },
         {
+            "icon": "award",
             "value": "{years}+",
             "label": {
                 "ar": "سنوات خبرة",
@@ -68,10 +71,10 @@
     "home.why": {
         "stats": [
             {
-                "value": "50+",
+                "value": "500+",
                 "label": {
-                    "ar": "خبير متخصص",
-                    "en": "Specialists"
+                    "ar": "مشروع منفّذ",
+                    "en": "Projects delivered"
                 }
             },
             {
@@ -93,29 +96,29 @@
             {
                 "icon": "rocket",
                 "text": {
-                    "ar": "خبرة تتجاوز {years} سنوات في تقنيات الويب والتسويق الرقمي",
-                    "en": "{years}+ years of expertise in web technologies & digital marketing"
+                    "ar": "خبرة تجمع بين تطوير البرمجيات والتسويق الرقمي",
+                    "en": "Experience in both software development and digital marketing"
                 }
             },
             {
                 "icon": "users",
                 "text": {
-                    "ar": "فريق متكامل يفهم السوق المصري والخليجي جيداً",
-                    "en": "A complete team that knows the Egyptian & Gulf markets well"
+                    "ar": "مديرو مشاريع ومصممون ومطورون ومهندسو جودة في فريق واحد",
+                    "en": "Project managers, designers, developers and QA engineers in one team"
                 }
             },
             {
                 "icon": "target",
                 "text": {
-                    "ar": "نفهم احتياجات عملائكم ونبني على أساسها",
-                    "en": "We understand your customers’ needs and build around them"
+                    "ar": "نحدد الأهداف والمتطلبات مع فريقكم قبل بدء التطوير",
+                    "en": "We agree on goals and requirements with your team before development starts"
                 }
             },
             {
                 "icon": "zap",
                 "text": {
-                    "ar": "دعم فني سريع ومتابعة مستمرة بعد الإطلاق",
-                    "en": "Fast technical support and continuous follow-up after launch"
+                    "ar": "دعم فني سريع وصيانة دورية",
+                    "en": "Responsive technical support and regular maintenance"
                 }
             }
         ]
@@ -230,8 +233,8 @@
                 "en": "E-Commerce"
             },
             "text": {
-                "ar": "متاجر رقمية متكاملة",
-                "en": "Complete digital stores"
+                "ar": "متاجر مرتبطة بأنظمة الدفع وإدارة المخزون",
+                "en": "Stores connected to payment and inventory systems"
             }
         },
         {
@@ -241,8 +244,8 @@
                 "en": "E-Learning"
             },
             "text": {
-                "ar": "منصات تعليمية تفاعلية",
-                "en": "Interactive learning platforms"
+                "ar": "منصات لإدارة المحتوى التعليمي والاختبارات",
+                "en": "Platforms for course content and assessments"
             }
         },
         {
@@ -252,30 +255,30 @@
                 "en": "Healthcare"
             },
             "text": {
-                "ar": "حلول صحية ذكية",
-                "en": "Smart healthcare solutions"
+                "ar": "أنظمة حجز المواعيد وإدارة سجلات المرضى",
+                "en": "Appointment booking and patient record systems"
             }
         },
         {
             "icon": "landmark",
             "title": {
                 "ar": "الخدمات المالية",
-                "en": "Finance"
+                "en": "Financial Services"
             },
             "text": {
-                "ar": "تطبيقات مالية آمنة",
-                "en": "Secure financial apps"
+                "ar": "تطبيقات مالية تراعي متطلبات أمن البيانات",
+                "en": "Financial apps built with data security in mind"
             }
         },
         {
             "icon": "plane",
             "title": {
                 "ar": "السياحة والسفر",
-                "en": "Tourism"
+                "en": "Travel & Tourism"
             },
             "text": {
-                "ar": "منصات حجز وسفر",
-                "en": "Booking and travel platforms"
+                "ar": "منصات الحجز وإدارة الرحلات",
+                "en": "Booking and trip management platforms"
             }
         },
         {
@@ -285,30 +288,30 @@
                 "en": "Real Estate"
             },
             "text": {
-                "ar": "حلول عقارية متطورة",
-                "en": "Advanced real estate solutions"
+                "ar": "منصات عرض العقارات وإدارة العملاء",
+                "en": "Property listing and client management platforms"
             }
         },
         {
             "icon": "utensils",
             "title": {
                 "ar": "المطاعم والضيافة",
-                "en": "Food & Hospitality"
+                "en": "Restaurants & Hospitality"
             },
             "text": {
-                "ar": "أنظمة طلب وإدارة",
-                "en": "Ordering and management systems"
+                "ar": "أنظمة الطلب وإدارة التشغيل",
+                "en": "Ordering and operations management systems"
             }
         },
         {
             "icon": "truck",
             "title": {
                 "ar": "النقل واللوجستيات",
-                "en": "Logistics"
+                "en": "Transport & Logistics"
             },
             "text": {
-                "ar": "حلول توصيل وتتبع",
-                "en": "Delivery and tracking solutions"
+                "ar": "أنظمة إدارة التوصيل وتتبع الشحنات",
+                "en": "Delivery management and shipment tracking systems"
             }
         }
     ],
@@ -316,12 +319,12 @@
         {
             "icon": "lightbulb",
             "title": {
-                "ar": "الفكرة",
-                "en": "Idea"
+                "ar": "التحليل",
+                "en": "Analysis"
             },
             "text": {
-                "ar": "نستمع إليكم ونفهم فكرتكم جيداً",
-                "en": "We listen and understand your idea"
+                "ar": "ندرس أهداف مؤسستكم ونحدد المتطلبات ونطاق العمل",
+                "en": "We review your goals and define the requirements and scope"
             }
         },
         {
@@ -331,8 +334,8 @@
                 "en": "Planning"
             },
             "text": {
-                "ar": "نحدد الأهداف والميزانية بدقة",
-                "en": "We define goals and budget"
+                "ar": "نضع الجدول الزمني والميزانية ونختار البنية التقنية",
+                "en": "We plan the timeline, budget and technical architecture"
             }
         },
         {
@@ -342,8 +345,8 @@
                 "en": "Design"
             },
             "text": {
-                "ar": "تصميم واجهات تجذب العملاء",
-                "en": "Interfaces that attract customers"
+                "ar": "نصمم تجربة المستخدم والواجهات بما يناسب جمهوركم",
+                "en": "We design the user experience and interfaces around your audience"
             }
         },
         {
@@ -353,8 +356,8 @@
                 "en": "Development"
             },
             "text": {
-                "ar": "برمجة احترافية وسريعة",
-                "en": "Professional, fast development"
+                "ar": "نكتب شيفرة منظمة قابلة للصيانة والتوسع",
+                "en": "We write structured code that is easy to maintain and scale"
             }
         },
         {
@@ -364,8 +367,8 @@
                 "en": "Testing"
             },
             "text": {
-                "ar": "اختبار شامل قبل الإطلاق",
-                "en": "Thorough testing before launch"
+                "ar": "نختبر الأداء والأمان على مختلف الأجهزة قبل الإطلاق",
+                "en": "We test performance and security across devices before launch"
             }
         },
         {
@@ -375,8 +378,8 @@
                 "en": "Launch"
             },
             "text": {
-                "ar": "إطلاق موقعكم للعالم",
-                "en": "Your site goes live"
+                "ar": "ننشر النظام في بيئة التشغيل ونتابع استقراره",
+                "en": "We deploy the system to production and monitor its stability"
             }
         },
         {
@@ -386,8 +389,8 @@
                 "en": "Growth"
             },
             "text": {
-                "ar": "تسويق ودعم مستمر",
-                "en": "Marketing and ongoing support"
+                "ar": "نقدم الصيانة والدعم الفني والتسويق الرقمي",
+                "en": "We provide maintenance, support and digital marketing"
             }
         }
     ],
@@ -399,8 +402,8 @@
                 "en": "Project Managers"
             },
             "text": {
-                "ar": "يضمنون سير العمل بسلاسة",
-                "en": "Keep work flowing smoothly"
+                "ar": "يديرون الجدول الزمني والتواصل معكم",
+                "en": "Manage the schedule and communication with you"
             }
         },
         {
@@ -410,8 +413,8 @@
                 "en": "Product Managers"
             },
             "text": {
-                "ar": "يحولون الأفكار إلى واقع",
-                "en": "Turn ideas into reality"
+                "ar": "يحددون المتطلبات وأولويات التطوير",
+                "en": "Define requirements and development priorities"
             }
         },
         {
@@ -421,8 +424,8 @@
                 "en": "UI/UX Designers"
             },
             "text": {
-                "ar": "يصنعون تجارب استثنائية",
-                "en": "Craft great experiences"
+                "ar": "يصممون واجهات واضحة وسهلة الاستخدام",
+                "en": "Design clear, easy-to-use interfaces"
             }
         },
         {
@@ -432,19 +435,19 @@
                 "en": "Developers"
             },
             "text": {
-                "ar": "يبنون حلولاً متينة",
-                "en": "Build robust solutions"
+                "ar": "يبنون الأنظمة ويربطونها بالخدمات الخارجية",
+                "en": "Build systems and integrate third-party services"
             }
         },
         {
             "icon": "bug",
             "title": {
-                "ar": "ضمان الجودة",
+                "ar": "مهندسو ضمان الجودة",
                 "en": "QA Engineers"
             },
             "text": {
-                "ar": "يضمنون جودة كل تفصيلة",
-                "en": "Check every detail"
+                "ar": "يختبرون كل إصدار قبل تسليمه",
+                "en": "Test each release before delivery"
             }
         },
         {
@@ -454,8 +457,8 @@
                 "en": "Marketing Experts"
             },
             "text": {
-                "ar": "ينشرون نجاحكم",
-                "en": "Spread your success"
+                "ar": "يخططون الحملات الرقمية ويقيسون نتائجها",
+                "en": "Plan digital campaigns and measure their results"
             }
         },
         {
@@ -465,8 +468,8 @@
                 "en": "SEO Specialists"
             },
             "text": {
-                "ar": "يزيدون ظهوركم",
-                "en": "Grow your visibility"
+                "ar": "يحسّنون ظهور موقعكم في نتائج البحث",
+                "en": "Improve your site’s visibility in search results"
             }
         }
     ],
@@ -474,15 +477,15 @@
         {
             "value": "500+",
             "label": {
-                "ar": "مشروع منجز",
-                "en": "Completed projects"
+                "ar": "مشروع منفّذ",
+                "en": "Projects delivered"
             }
         },
         {
             "value": "200+",
             "label": {
-                "ar": "عميل وشركة",
-                "en": "Clients & companies"
+                "ar": "عميل",
+                "en": "Clients"
             }
         },
         {
@@ -502,12 +505,12 @@
     ],
     "about.story": [
         {
-            "ar": "بدأت كودلك كفكرة بسيطة: مساعدة الأعمال على تحقيق أحلامها الرقمية. ومن فريق صغير من المطورين المتحمسين، نمونا لنصبح شركة تقنية متكاملة تخدم عملاء في مختلف القطاعات في مصر والخليج.",
-            "en": "Codlek started as a simple idea: helping businesses achieve their digital dreams. From a small team of passionate developers, we grew into a full technology company serving clients across many sectors in Egypt and the Gulf."
+            "ar": "بدأت كودلك بفريق صغير من المطورين يبني برمجيات تلبي الاحتياجات الفعلية للشركات، ثم توسعت لتصبح شركة تقنية متكاملة تخدم عملاء من قطاعات مختلفة في مصر والخليج.",
+            "en": "Codlek began with a small team of developers building software around what businesses actually need. It has since grown into a full-service technology company with clients across many industries in Egypt and the Gulf."
         },
         {
-            "ar": "اليوم نفتخر بفريق متنوع من أكثر من 50 خبيراً في التطوير والتصميم والتسويق، يجمعهم هدف واحد: تقديم أفضل الحلول الرقمية لعملائنا.",
-            "en": "Today we are proud of a diverse team of more than 50 specialists in development, design and marketing, all sharing one goal: delivering the best digital solutions to our clients."
+            "ar": "يضم فريقنا الداخلي اليوم أكثر من 50 متخصصاً في تطوير البرمجيات والتصميم والتسويق الرقمي، ويتولون كل مشروع من التخطيط حتى الإطلاق والصيانة.",
+            "en": "Today our in-house team includes more than 50 specialists in software development, design and digital marketing, who handle each project from planning through launch and maintenance."
         }
     ],
     "about.values": [
@@ -518,8 +521,8 @@
                 "en": "Innovation"
             },
             "text": {
-                "ar": "نبحث دائماً عن حلول إبداعية ومبتكرة",
-                "en": "We always look for creative, innovative solutions"
+                "ar": "نعتمد التقنيات الحديثة متى خدمت أهداف المشروع",
+                "en": "We adopt new technology when it serves the project’s goals"
             }
         },
         {
@@ -529,8 +532,8 @@
                 "en": "Commitment"
             },
             "text": {
-                "ar": "نلتزم بالمواعيد والجودة العالية",
-                "en": "We commit to deadlines and high quality"
+                "ar": "نعمل وفق الجدول الزمني والنطاق المتفق عليهما في كل مشروع",
+                "en": "We work to the agreed schedule and scope on every project"
             }
         },
         {
@@ -540,46 +543,46 @@
                 "en": "Partnership"
             },
             "text": {
-                "ar": "نعمل كشركاء حقيقيين لعملائنا",
-                "en": "We work as true partners to our clients"
+                "ar": "ننطلق من أهداف مؤسستكم ونعمل عن كثب مع فريقكم",
+                "en": "We start from your business goals and work closely with your team"
             }
         },
         {
             "icon": "heart",
             "title": {
-                "ar": "الشغف",
-                "en": "Passion"
+                "ar": "الإتقان",
+                "en": "Craftsmanship"
             },
             "text": {
-                "ar": "نحب ما نفعله ونتقنه",
-                "en": "We love what we do and master it"
+                "ar": "نهتم بجودة الشيفرة البرمجية وبالتفاصيل التي لا يراها المستخدم",
+                "en": "We care about code quality and the details users never see"
             }
         }
     ],
     "about.why": [
         {
-            "ar": "فريق يفهم السوق المصري والخليجي جيداً",
-            "en": "A team that knows the Egyptian & Gulf markets"
+            "ar": "خبرة عملية في السوقين المصري والخليجي",
+            "en": "Hands-on experience in the Egyptian and Gulf markets"
         },
         {
-            "ar": "منهجية Agile للتسليم السريع",
-            "en": "Agile methodology for fast delivery"
+            "ar": "تطوير بمنهجية Agile وتسليم على مراحل",
+            "en": "Agile development with phased delivery"
         },
         {
-            "ar": "دعم فني متواصل بعد التسليم",
-            "en": "Continuous technical support after delivery"
+            "ar": "صيانة مستمرة ودعم فني بعد التسليم",
+            "en": "Ongoing maintenance and technical support after delivery"
         },
         {
-            "ar": "أسعار تنافسية بجودة عالمية",
-            "en": "Competitive prices with global quality"
+            "ar": "أسعار تنافسية دون تنازل عن الجودة",
+            "en": "Competitive pricing with no compromise on quality"
         },
         {
-            "ar": "شفافية كاملة في كل مرحلة",
-            "en": "Full transparency at every stage"
+            "ar": "اطلاع كامل على سير العمل في كل مرحلة",
+            "en": "Full visibility of progress at every stage"
         },
         {
-            "ar": "التزام حقيقي برضا العملاء",
-            "en": "A real commitment to client satisfaction"
+            "ar": "رضا العميل معيارنا في تقييم كل مشروع",
+            "en": "We measure every project by client satisfaction"
         }
     ],
     "about.satisfaction": "98%",
