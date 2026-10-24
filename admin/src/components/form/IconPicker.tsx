@@ -2,10 +2,14 @@ import { Select, Space } from 'antd';
 import { useMemo, useState } from 'react';
 import { DynamicIcon, iconNames, type IconName } from 'lucide-react/dynamic';
 
+/** Names saved before Lucide 1.x renamed the icon (the site's Icon.tsx maps them the same way). */
+const RENAMED: Record<string, string> = { 'building-2': 'building' };
+
 /** An icon by its Lucide name, loaded on demand. */
 export function LucideIcon({ name, size = 18 }: { name?: string | null; size?: number }) {
-    const known = name && (iconNames as readonly string[]).includes(name);
-    return known ? <DynamicIcon name={name as IconName} size={size} /> : <span style={{ display: 'inline-block', width: size, height: size }} />;
+    const current = name ? (RENAMED[name] ?? name) : name;
+    const known = current && (iconNames as readonly string[]).includes(current);
+    return known ? <DynamicIcon name={current as IconName} size={size} /> : <span style={{ display: 'inline-block', width: size, height: size }} />;
 }
 
 /**
