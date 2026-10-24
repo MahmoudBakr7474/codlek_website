@@ -48,7 +48,7 @@ public class PublicPagesTests(ApiFactory factory)
         Assert.False(string.IsNullOrEmpty(site.Contact.Email));
         Assert.Equal(["web"], site.Services.Select(s => s.Key));
         Assert.Equal(["web", "other"], site.ServiceOptions.Select(s => s.Key));
-        Assert.Equal("always", site.Appearance.Loader);
+        Assert.Equal("session", site.Appearance.Loader);   // the full intro once per visit
     }
 
     [Fact]

@@ -920,7 +920,7 @@
     ],
     "mail.send_confirmation": true,
     "seo.og_image": null,
-    "appearance.loader": "always",
+    "appearance.loader": "session",
     "appearance.theme": "light",
     "appearance.floating_contact": true
 }
