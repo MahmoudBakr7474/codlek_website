@@ -398,10 +398,10 @@
     --tw-prose-links: var(--primary-ink);
     --tw-prose-bold: var(--ink);
     --tw-prose-counters: var(--primary-ink);
-    --tw-prose-bullets: var(--teal);
+    --tw-prose-bullets: var(--secondary);
     --tw-prose-hr: var(--line);
     --tw-prose-quotes: var(--ink);
-    --tw-prose-quote-borders: var(--teal);
+    --tw-prose-quote-borders: var(--secondary);
     --tw-prose-captions: var(--ink-subtle);
     --tw-prose-kbd: var(--ink);
     --tw-prose-code: var(--ink);

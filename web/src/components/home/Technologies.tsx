@@ -47,8 +47,9 @@ type Logo = { icon: SimpleIcon } | { glyph: LucideIcon; hex: string };
  * "nodejs" and "Node JS" all match. Simple Icons has no AWS or SQL Server logo:
  * those get a plain cloud and database in the brand colour.
  */
-const logos: Record<string, Logo> = {};
-const add = (logo: Logo, ...names: string[]) => names.forEach((name) => (logos[name] = logo));
+// A Map, not an object: a name such as "constructor" must not find Object's own members.
+const logos = new Map<string, Logo>();
+const add = (logo: Logo, ...names: string[]) => names.forEach((name) => logos.set(name, logo));
 
 add({ icon: siWordpress }, 'wordpress');
 add({ icon: siWoocommerce }, 'woocommerce');
@@ -112,7 +113,7 @@ function tint(hex: string): string {
 
 /** The tool's logo; a name without one gets a code glyph in the owner's colour (set in the admin). */
 function TechLogo({ name, color }: { name: string; color: string }) {
-    const logo = logos[name.toLowerCase().replace(/[\s.\-_]/g, '')];
+    const logo = logos.get(name.toLowerCase().replace(/[\s.\-_]/g, ''));
     const hex = logo ? ('icon' in logo ? logo.icon.hex : logo.hex) : color.replace('#', '');
     const className = cx('size-[18px] shrink-0', tint(hex));
     const style = { '--brand': `#${hex}` } as React.CSSProperties;
