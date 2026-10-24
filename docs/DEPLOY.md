@@ -51,8 +51,17 @@
    الأداة بتعمل الجداول (migrations) وبتنقل كل الداتا بنفس الـ IDs، وبتطبع عدد الصفوف في كل جدول.
 3. **اقفل الوصول من بره تاني** بعد ما تخلص (Disabled).
 
-**ب) من غير وصول من بره:** افتح LocalDB `(localdb)\MSSQLLocalDB` في SQL Server Management Studio، واعمل كليك يمين على داتابيز `Codlek` ← Tasks ← Generate Scripts ← Advanced ← *Types of data to script* = **Schema and data**. وبعدين شغّل السكريبت على داتابيز MonsterASP من أداة الداتابيز في لوحتهم.
-استخدم الطريقة دي كمان لو عدّلت محتوى من اللوحة المحلية وعايز تنقله زي ما هو.
+**ب) من غير وصول من بره ولا كلمة سر (اللي اتعمل في أول رفع):**
+1. ارفع الـ API الأول وشغّله مرة، و `Codlek__MigrateOnStartup=true`، فهو بيعمل الجداول فاضية.
+2. على جهازك، اطلّع الداتا من LocalDB لملف SQL:
+   ```bash
+   powershell -ExecutionPolicy Bypass -File deploy/export-data.ps1
+   ```
+   الناتج بيبقى `out/codlek-data.sql`، وفيه INSERTs بنفس الـ IDs.
+3. في MonsterASP: الداتابيز ← WebMSSQL ← **Open Adminer** (بيدخل لوحده) ← **Import** ← اختار الملف ← **Execute**.
+4. اعمل **Restart** للتطبيق، لأن الإعدادات بتتحفظ في الذاكرة من أول تشغيل، فلازم يقراها من جديد.
+
+ودي نفس الطريقة لو عدّلت محتوى من اللوحة المحلية وعايز تنقله زي ما هو، بشرط إن الجداول على السيرفر تكون فاضية.
 
 ### 2.3 الإعدادات (Environment variables)
 Control Panel ← Websites ← موقعك ← **Scripting** ← **Environment variables** ← اكتب الاسم والقيمة ← **Add**، وفي الآخر **Restart application**.
@@ -61,7 +70,7 @@ Control Panel ← Websites ← موقعك ← **Scripting** ← **Environment va
 | الاسم | القيمة | ملاحظات |
 |---|---|---|
 | `ASPNETCORE_ENVIRONMENT` | `Production` | متسيبهاش أبداً `Development` على السيرفر |
-| `ConnectionStrings__Default` | الـ connection string الداخلي بتاع الداتابيز | من صفحة الداتابيز (مش بتاع الـ remote) |
+| `ConnectionStrings__Default` | الـ connection string الداخلي بتاع الداتابيز | الاسم بالظبط كده. القيمة من صفحة الداتابيز ← Local access ← Show with password (مش بتاع الـ remote) |
 | `Codlek__PublicUrl` | `https://<api-host>` | من غير `/` في الآخر. روابط الصور بتتبني منه |
 | `Codlek__SiteUrl` | `https://<الدومين>` | الموقع على Vercel. بيُستخدم في الإيميلات وزرار «عرض الموقع» |
 | `Codlek__CorsOrigins` | `https://<الدومين>,https://www.<الدومين>` | العناوين اللي الفورمين بيبعتوا منها. ضيف `https://<project>.vercel.app` لو هتجرب عليه |
@@ -73,6 +82,7 @@ Control Panel ← Websites ← موقعك ← **Scripting** ← **Environment va
 | `Mail__FromName` | `Codlek` | |
 | `Mail__ResendApiKey` | `re_...` | لو `Mail__Driver=resend` |
 | `Mail__Smtp__Host` / `__Port` / `__Username` / `__Password` | بيانات الـ SMTP | لو `Mail__Driver=smtp` (الخطة المجانية مفيهاش إيميلات، فـ Resend أضمن لأنه بيبعت على HTTPS) |
+| `Sentry__Dsn` | DSN مشروع `codlek-api` | من Sentry: المشروع ← Settings ← Client Keys. من غيره Sentry بيقفل، والتطبيق شغال عادي. ولوحة التحكم كمان بتبعت أخطاءها عن طريق الـ API (`/api/monitoring`)، فمن غيره أخطاء اللوحة مش هتوصل. لو القيمة مكتوبة غلط، Sentry بيقفل والتطبيق بيكمل |
 
 كلمة سر عشوائية للـ revalidate (PowerShell):
 ```powershell
@@ -92,7 +102,9 @@ $b = New-Object byte[] 32; [Security.Cryptography.RandomNumberGenerator]::Create
 - الـ `web.config` بيطلع لوحده من الـ publish. متعدلش فيه.
 
 ### 2.5 HTTPS (قبل أي دخول للوحة)
-الخطة المجانية بتفعّل HTTPS بتذكرة للدعم. **لازم يتفعّل قبل أول دخول للوحة** عشان كلمة السر متتبعتش على HTTP. وكمان الموقع على Vercel شغال HTTPS، فالمتصفح هيرفض يبعت الفورم أو يعرض الصور من API شغال HTTP.
+موقعك ← **HTTPS** ← **Enable HTTPS** (شهادة Let's Encrypt مجانية بتتجدد لوحدها)، وبعدين فعّل **HTTPS Redirect**. **لازم يتفعّل قبل أول دخول للوحة** عشان كلمة السر متتبعتش على HTTP. وكمان الموقع على Vercel شغال HTTPS، فالمتصفح هيرفض يبعت الفورم أو يعرض الصور من API شغال HTTP.
+
+> التطبيق على MonsterASP شغال 32-bit (x86) افتراضياً، والـ publish فيه المكتبات اللي محتاجها (`runtimes/win-x86`).
 
 ### 2.6 اتأكد إن الـ API شغال
 - `https://<api-host>/api/health` ← `{"status":"ok"}`
@@ -104,7 +116,9 @@ $b = New-Object byte[] 32; [Security.Cryptography.RandomNumberGenerator]::Create
 ## 3. Vercel
 
 1. ارفع الكود على GitHub، وبعدين في Vercel: **Add New ← Project** ← اختار الريبو.
-2. **Root Directory:** `web`. الـ Framework هيتعرف لوحده (Next.js).
+2. Settings ← Build and Deployment:
+   - **Root Directory:** `web`.
+   - **Framework Preset:** **Next.js**. لو فاضل **Other**، الـ build بيخلص في ثانيتين والموقع كله بيطلع «This page doesn't exist».
 3. Settings ← General ← **Node.js Version:** `22.x` (Next 16 محتاج 20.9 أو أحدث).
 4. **Environment Variables** (Production):
 
@@ -114,6 +128,10 @@ $b = New-Object byte[] 32; [Security.Cryptography.RandomNumberGenerator]::Create
 | `NEXT_PUBLIC_API_URL` | `https://<api-host>` |
 | `NEXT_PUBLIC_SITE_URL` | `https://<الدومين>` |
 | `REVALIDATE_SECRET` | نفس `Codlek__RevalidateSecret` |
+| `NEXT_PUBLIC_SENTRY_DSN` | DSN مشروع `codlek-web` (نوع Config، مش سري). من غيره Sentry مقفول على الموقع |
+| `SENTRY_AUTH_TOKEN` | اختياري، نوع **Secret**: Organization Token من Sentry (Settings ← Auth Tokens). بيرفع الـ source maps وقت الـ build، فالأخطاء بتظهر بأسماء الملفات والسطور الحقيقية |
+
+أي تغيير في المتغيرات دي محتاج **Redeploy**، لأن الموقع بيقراها وقت الـ build.
 
 5. **Deploy.** الـ build بيقرا المحتوى من الـ API، فلو فشل اتأكد إن `https://<api-host>/api/health` شغال.
 6. الدومين: Settings ← Domains ← ضيف الدومين واعمل الـ DNS records اللي Vercel بيقولها.
@@ -144,8 +162,18 @@ $b = New-Object byte[] 32; [Security.Cryptography.RandomNumberGenerator]::Create
 ## 6. التحديثات بعد كده
 
 - **محتوى:** من اللوحة. مفيش رفع.
-- **الموقع:** push على GitHub، و Vercel بيعمل build لوحده.
-- **الـ API أو اللوحة:** شغّل السكريبت تاني **من غير** `-WithUploads`، وارفع `out\api` (من غير ما تمسح `wwwroot/uploads` و `storage/` من السيرفر). لو فيه migration جديدة، `Codlek__MigrateOnStartup` بيطبقها مع أول تشغيل.
+- **الموقع (`web/`):** push على فرع `main` في الريبو المتوصل بمشروع Vercel، و Vercel بيعمل build ويرفع لوحده.
+- **الـ API أو اللوحة (`api/` أو `admin/`):** أمر واحد:
+  ```bash
+  powershell -ExecutionPolicy Bypass -File deploy/publish-api.ps1 -Deploy
+  ```
+  - بيعمل build للوحة و publish للـ API، وبيرفع على MonsterASP بـ WebDeploy **الملفات اللي اتغيرت بس** (بيقارن المحتوى)، والموقع بيقفل ثواني وقت النسخ وبعدين بيتأكد إن `/api/health` شغال.
+  - مش بيلمس أبداً: الصور (`wwwroot/uploads`)، والـ CVs ومفاتيح الدخول (`storage`)، وشهادة HTTPS (`.well-known`)، والـ logs، و `appsettings.Production.json`.
+  - محتاج ملف الـ publish profile: من موقعك في MonsterASP ← Deploy ← WebDeploy ← **Download publish profile**. حطه في الفولدر اللي فيه الريبو (`D:\Codlek\`)، **مش جوه الريبو**: فيه كلمة سر WebDeploy. ولو في مكان تاني: `-PublishProfile <المسار>`.
+  - عايز تشوف هيتغير إيه من غير ما تغيّر حاجة؟ زوّد `-DryRun`.
+  - لو فيه migration جديدة، `Codlek__MigrateOnStartup` بيطبقها مع أول تشغيل.
+- **تعديل في الاتنين** (مثلاً endpoint جديد الموقع بيستخدمه): ارفع الـ API الأول، وبعدين الموقع.
+- **Sentry في لوحة التحكم:** الـ build بتاع اللوحة بيقرا الـ DSN من `admin/.env.production.local` على الجهاز اللي بيرفع (مش في git، وفيه `admin/.env.example` كنموذج). لو الملف مش موجود، اللوحة بتترفع وSentry مقفول فيها. ولو حطيت `SENTRY_AUTH_TOKEN` في الترمينال قبل أمر الرفع، الـ build بيرفع الـ source maps لـ Sentry.
 
 ---
 
@@ -159,3 +187,5 @@ $b = New-Object byte[] 32; [Security.Cryptography.RandomNumberGenerator]::Create
 | اللوحة بتعمل خروج لوحدها كتير | فولدر `storage/keys` مش بيتكتب فيه (صلاحيات). |
 | الإيميلات مش بتوصل | راجع `Mail__Driver` والمفتاح. الرسايل بتتحفظ في اللوحة في كل الأحوال. |
 | «محاولات كتير» بتظهر لزوار كتير مع بعض | معناها إن MonsterASP شغال ورا proxy وكل الزوار طالعين بنفس الـ IP. ابعتلي وأظبط قراءة الـ IP. |
+| مفيش أخطاء بتوصل Sentry | الـ API: `Sentry__Dsn` على MonsterASP، وبعدها Restart. الموقع: `NEXT_PUBLIC_SENTRY_DSN` على Vercel، وبعدها Redeploy. اللوحة: `admin/.env.production.local` على الجهاز اللي بيرفع، **و** `Sentry__Dsn` على الـ API (أخطاء اللوحة بتعدي عليه). |
+| الأخطاء في Sentry بتظهر بأسماء ملفات زي `chunks/_1x...js` | الـ source maps مش مرفوعة: حط `SENTRY_AUTH_TOKEN` (Vercel للموقع، والترمينال وقت الرفع للوحة). |
