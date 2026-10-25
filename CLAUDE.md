@@ -32,7 +32,9 @@ Rewrite of the Codlek company site from Laravel. The plan, decisions and phase s
 - Dashboard: `cd admin && npm run build` builds it into `api/src/Codlek.Api/wwwroot/admin` (gitignored).
 - Publish for MonsterASP: `deploy/publish-api.ps1` → `out/api`; with `-Deploy` it uploads the changed files over
   WebDeploy (`-DryRun` to preview), using the `.publishSettings` file in `D:\Codlek\` (outside the repo: it holds
-  the WebDeploy password). Live: API https://codlek.tryasp.net, site https://codlekwebsite.vercel.app.
+  the WebDeploy password). Live: https://codlek.tryasp.net is both the site and the API: with
+  `Codlek__SiteProxy` set, the API passes every path it doesn't own (`/api`, `/admin`, `wwwroot`, `/uploads`)
+  to the Next.js build on https://codlekwebsite.vercel.app (YARP, `Site/SiteProxy.cs`).
   Deploy steps: `docs/DEPLOY.md`.
 - Migrations: `cd api && dotnet ef migrations add <Name> -p src/Codlek.Api -o Data/Migrations`, then
   `dotnet ef database update -p src/Codlek.Api` (`dotnet-ef` is a local tool: `dotnet tool restore`).

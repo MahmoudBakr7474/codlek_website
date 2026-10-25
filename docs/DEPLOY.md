@@ -77,6 +77,7 @@ Control Panel ← Websites ← موقعك ← **Scripting** ← **Environment va
 | `Codlek__RevalidateUrl` | `https://<الدومين>/api/revalidate` | الـ API بيكلمه بعد كل حفظ في اللوحة عشان الموقع يتحدث على طول |
 | `Codlek__RevalidateSecret` | كلمة سر طويلة عشوائية | **نفس القيمة** في `REVALIDATE_SECRET` على Vercel |
 | `Codlek__MigrateOnStartup` | `true` | أي تعديل في شكل الداتابيز في التحديثات الجاية بيتطبق لوحده مع أول تشغيل |
+| `Codlek__SiteProxy` | `https://<project>.vercel.app` | اختياري: عنوان الـ API نفسه يفتح الموقع (الـ API بيجيب الصفحات من Vercel ويعرضها)، و `/admin` يفضل اللوحة. ساعتها `Codlek__SiteUrl` وأول عنوان في `Codlek__CorsOrigins` يبقوا `https://<api-host>`، و `NEXT_PUBLIC_SITE_URL` على Vercel كمان. `Codlek__RevalidateUrl` يفضل على عنوان Vercel |
 | `Mail__Driver` | `resend` أو `smtp` أو `log` | `log` يعني من غير إرسال (الرسايل بتتحفظ في اللوحة عادي) |
 | `Mail__FromAddress` | `no-reply@<الدومين>` | لازم الدومين يكون متأكد منه في Resend |
 | `Mail__FromName` | `Codlek` | |

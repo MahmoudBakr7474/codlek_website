@@ -76,6 +76,13 @@ builder.Services.AddCors(options => options.AddPolicy(FormEndpoints.CorsPolicy, 
     .WithMethods("POST")
     .WithHeaders("Content-Type")));
 
+// Codlek:SiteProxy (the site's Vercel address): this host also serves the public site (SiteProxy).
+var siteProxy = SiteProxy.Origin(builder.Configuration);
+if (siteProxy is not null)
+{
+    builder.Services.AddSiteProxy(siteProxy);
+}
+
 var app = builder.Build();
 
 // Hosting without a shell: Codlek:MigrateOnStartup brings the database schema up to date when the app starts.
@@ -87,7 +94,6 @@ if (app.Configuration.GetValue<bool>("Codlek:MigrateOnStartup"))
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();
-app.UseCors();
 
 if (app.Environment.IsDevelopment())
 {
@@ -95,6 +101,8 @@ if (app.Environment.IsDevelopment())
 }
 
 // wwwroot: /uploads/... (pictures uploaded in the admin) and /admin/ (the dashboard's build).
+// Static files come before routing, so an existing file is served before any route (the
+// site proxy's catch-all included) is considered.
 app.UseStaticFiles();
 
 // Codlek:UploadsRoot keeps the pictures in a folder outside the site, where a redeploy can't delete them.
@@ -106,12 +114,23 @@ if (app.Configuration["Codlek:UploadsRoot"] is { Length: > 0 })
     app.UseStaticFiles(new StaticFileOptions { FileProvider = new PhysicalFileProvider(uploads), RequestPath = "/uploads" });
 }
 
+app.UseRouting();
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapGet("/api/health", () => Results.Ok(new { status = "ok" }));
-// The API host has no page of its own: its bare address opens the dashboard.
-app.MapGet("/", () => Results.Redirect("/admin/")).ExcludeFromDescription();
+if (siteProxy is null)
+{
+    // The API host has no page of its own: its bare address opens the dashboard.
+    app.MapGet("/", () => Results.Redirect("/admin/")).ExcludeFromDescription();
+}
+else
+{
+    // An unknown API path stays a 404 of the API, not a page of the site.
+    app.Map("/api/{**rest}", () => Results.NotFound()).ExcludeFromDescription();
+}
+
 app.MapPublicEndpoints();
 app.MapFormEndpoints();
 
@@ -125,6 +144,11 @@ admin.MapAdminSettings();
 
 // The dashboard is a single-page app: its routes all load admin/index.html.
 app.MapFallbackToFile("/admin/{*path:nonfile}", "admin/index.html");
+
+if (siteProxy is not null)
+{
+    app.MapReverseProxy();
+}
 
 app.Run();
 
