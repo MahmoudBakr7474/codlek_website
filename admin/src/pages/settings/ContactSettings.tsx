@@ -36,7 +36,7 @@ export function ContactSettings() {
                 </Form.Item>
                 <Row gutter={12}>
                     <Col xs={24} md={12}>
-                        <Form.Item name={['settings', 'contact.phone']} label="رقم التليفون (زي ما يظهر)" rules={required} extra={<Hint text="مثلاً 01144745671" />}>
+                        <Form.Item name={['settings', 'contact.phone']} label="رقم التليفون (زي ما يظهر)" rules={required} extra={<Hint text="مثلاً 01110863489" />}>
                             <Input maxLength={30} dir="ltr" />
                         </Form.Item>
                     </Col>
@@ -45,7 +45,7 @@ export function ContactSettings() {
                             name={['settings', 'contact.phone_international']}
                             label="الرقم بكود الدولة (للاتصال)"
                             rules={[...required, { pattern: /^\+[1-9][0-9]{7,14}$/, message: 'اكتب الرقم بالشكل ده: + وبعدها كود الدولة والرقم من غير مسافات.' }]}
-                            extra={<Hint text="مثلاً +201144745671" />}
+                            extra={<Hint text="مثلاً +201110863489" />}
                         >
                             <Input maxLength={16} dir="ltr" />
                         </Form.Item>
@@ -55,7 +55,7 @@ export function ContactSettings() {
                     name={['settings', 'contact.whatsapp']}
                     label="رقم واتساب"
                     rules={[...required, { pattern: /^[1-9][0-9]{7,14}$/, message: 'أرقام بس بكود الدولة، من غير + ولا مسافات.' }]}
-                    extra={<Hint text="أرقام بس بكود الدولة من غير + ولا مسافات، مثلاً 201144745671" />}
+                    extra={<Hint text="أرقام بس بكود الدولة من غير + ولا مسافات، مثلاً 201110863489" />}
                 >
                     <Input prefix={<MobileOutlined />} maxLength={15} dir="ltr" />
                 </Form.Item>

@@ -7,7 +7,7 @@ namespace Codlek.Api.Tests;
 public class HelperTests
 {
     [Theory]
-    [InlineData("٠١١٤٤٧٤٥٦٧١", "01144745671")]
+    [InlineData("٠١١١٠٨٦٣٤٨٩", "01110863489")]
     [InlineData("۰۱۲", "012")]
     [InlineData("‪+966 5x‬", "+966 5x")]
     [InlineData("  010  123  ", "010 123")]

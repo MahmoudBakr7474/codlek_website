@@ -252,7 +252,7 @@ public class AdminTests(ApiFactory factory)
             values = new Dictionary<string, JsonNode?>
             {
                 ["contact.email"] = "not-mail",
-                ["contact.phone_international"] = "01144745671",
+                ["contact.phone_international"] = "01110863489",
                 ["contact.whatsapp"] = "+20 114",
                 ["company.founded"] = 1800,
                 ["mail.notify_emails"] = new JsonArray(),

@@ -900,23 +900,14 @@
             }
         }
     ],
-    "contact.email": "newelgamalxx@gmail.com",
-    "contact.phone": "01144745671",
-    "contact.phone_international": "+201144745671",
-    "contact.whatsapp": "201144745671",
+    "contact.email": "mahmoudbakr122001@gmail.com",
+    "contact.phone": "01110863489",
+    "contact.phone_international": "+201110863489",
+    "contact.whatsapp": "201110863489",
     "company.founded": 2019,
-    "social.links": [
-        {
-            "platform": "facebook",
-            "url": "https://www.facebook.com/codlek.company"
-        },
-        {
-            "platform": "instagram",
-            "url": "https://www.instagram.com/codlek_company/"
-        }
-    ],
+    "social.links": [],
     "mail.notify_emails": [
-        "newelgamalxx@gmail.com"
+        "mahmoudbakr122001@gmail.com"
     ],
     "mail.send_confirmation": true,
     "seo.og_image": null,
