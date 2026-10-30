@@ -5,11 +5,12 @@ import { absolute } from '@/lib/site-url';
 
 const sitePages: Page[] = ['home', 'about', 'services', 'projects', 'blog', 'careers', 'contact', 'privacy', 'terms'];
 
-/** Every page and published article in both languages, each with its hreflang alternates. */
+/** Every page, project page and published article in both languages, each with its hreflang alternates. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const { posts } = await getSitemap();
+    const { posts, projects } = await getSitemap();
     const entries = [
         ...sitePages.map((page) => ({ path: page as string, lastModified: undefined as string | undefined })),
+        ...projects.map((project) => ({ path: `/projects/${project.id}`, lastModified: project.updatedAt ?? undefined })),
         ...posts.map((post) => ({ path: `/blog/${encodeURIComponent(post.slug)}`, lastModified: post.updatedAt ?? undefined })),
     ];
 

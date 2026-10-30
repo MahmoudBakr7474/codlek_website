@@ -96,6 +96,8 @@
     "projects.visit": "Visit the site",
     "projects.gallery_prev": "Previous image",
     "projects.gallery_next": "Next image",
+    "projects.similar_title": "Get a similar service for any idea you have for your project",
+    "projects.similar_cta": "Request a free consultation",
     "projects.empty": "There are no projects in this category yet.",
     "projects.count": "{0} No projects|{1} 1 project|[2,*] :count projects",
     "blog.hero.eyebrow": "Blog",

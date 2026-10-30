@@ -100,6 +100,8 @@ public sealed record LegalDto(string Title, string Updated, IReadOnlyList<LegalS
 
 public sealed record SitemapPost(string Slug, DateTime? UpdatedAt);
 
-public sealed record SitemapDto(IReadOnlyList<SitemapPost> Posts);
+public sealed record SitemapProject(int Id, DateTime? UpdatedAt);
+
+public sealed record SitemapDto(IReadOnlyList<SitemapPost> Posts, IReadOnlyList<SitemapProject> Projects);
 
 public sealed record FormSuccess(string Title, string Text);

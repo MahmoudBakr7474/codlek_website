@@ -1,19 +1,19 @@
 /* eslint-disable @next/next/no-img-element -- screenshots come from the API host, at their own sizes */
-import { ArrowUpRight, Images } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import type { ProjectData } from '@/lib/api';
-import { alignFor, dirOf, type Locale, type Translate } from '@/lib/i18n';
+import { alignFor, dirOf, projectHref, type Locale, type Translate } from '@/lib/i18n';
 import { cx } from '@/lib/cx';
 import { BrowserDots } from '../ui/BrowserDots';
 import { NamedIconTile } from '../ui/NamedIconTile';
-import { ProjectGallery } from './ProjectGallery';
 
 /*
  * A project as a browser window: the real screenshot under a bar with the site's
  * address, then category, title, description and the address. A project with a
- * gallery opens it (the title, stretched, is the button; its link moves into the
- * dialog); otherwise a live site with a link makes the whole card one link.
- * "Coming soon" and projects without either are plain cards. Flat, as in the
- * design (a hairline, no shadow); a card that opens something lifts on hover.
+ * gallery has a page of its own, and the whole card links there (its site's link
+ * moves onto that page); otherwise a live site with a link makes the whole card
+ * one link. "Coming soon" and projects without either are plain cards. Flat, as in
+ * the design (a hairline, no shadow); a card that opens something lifts on hover.
  */
 export function ProjectCard({
     project,
@@ -32,8 +32,10 @@ export function ProjectCard({
     className?: string;
 }) {
     const linkable = project.isLinkable;
-    const gallery = project.isComingSoon ? [] : (project.gallery ?? []);
-    const interactive = linkable || gallery.length > 0;
+    // PublicMap.HasPage in the API.
+    const hasPage = !project.isComingSoon && (project.gallery ?? []).length > 0;
+    const interactive = linkable || hasPage;
+    const stretched = 'outline-none transition-colors group-hover:text-primary-ink after:absolute after:inset-0 after:rounded-card';
     const titleDir = dirOf(project.title, locale);
     const descriptionDir = dirOf(project.description, locale);
     const align = alignFor(locale);
@@ -91,27 +93,12 @@ export function ProjectCard({
                 )}
 
                 <Heading dir={titleDir} className={cx('text-[19px] leading-[1.7] font-extrabold', titleDir && align)}>
-                    {gallery.length > 0 ? (
-                        <ProjectGallery
-                            title={project.title}
-                            category={project.category?.name}
-                            description={project.description}
-                            images={gallery}
-                            url={linkable ? project.url : null}
-                            host={project.host}
-                            titleDir={titleDir}
-                            descriptionDir={descriptionDir}
-                            labels={{ close: t('close'), prev: t('projects.gallery_prev'), next: t('projects.gallery_next'), visit: t('projects.visit') }}
-                        >
+                    {hasPage ? (
+                        <Link href={projectHref(locale, project.id)} className={stretched}>
                             {project.title}
-                        </ProjectGallery>
+                        </Link>
                     ) : linkable ? (
-                        <a
-                            href={project.url!}
-                            target="_blank"
-                            rel="noopener"
-                            className="outline-none transition-colors group-hover:text-primary-ink after:absolute after:inset-0 after:rounded-card"
-                        >
+                        <a href={project.url!} target="_blank" rel="noopener" className={stretched}>
                             {project.title}
                         </a>
                     ) : (
@@ -123,11 +110,11 @@ export function ProjectCard({
                     {project.description}
                 </p>
 
-                {gallery.length > 0 ? (
-                    // What the card opens; the title above is the actual button.
+                {hasPage ? (
+                    // Where the card leads; the title above is the actual link.
                     <span className="inline-flex items-center gap-1.5 self-end text-[15px] font-bold text-primary-ink" aria-hidden="true">
-                        <Images className="size-4 shrink-0" />
                         {t('projects.details')}
+                        <ArrowRight className="size-4 shrink-0 transition-transform duration-300 group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5" />
                     </span>
                 ) : linkable && project.host && (
                     // The address, as in the design; the title above is the actual link.

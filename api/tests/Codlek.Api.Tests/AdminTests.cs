@@ -164,7 +164,17 @@ public class AdminTests(ApiFactory factory)
             ["https://api.test/uploads/projects/gallery/b.webp", "https://api.test/uploads/projects/gallery/a.webp"],
             shown.GetProperty("gallery").EnumerateArray().Select(p => p.GetString()));
 
+        // With a gallery the project has its own page, listed in the sitemap; without one it has none.
+        var page = await factory.CreateClient().GetFromJsonAsync<JsonElement>($"/api/public/ar/projects/{id}");
+        Assert.Equal("برنامج", page.GetProperty("title").GetString());
+        var sitemap = await factory.CreateClient().GetFromJsonAsync<JsonElement>("/api/public/sitemap");
+        Assert.Contains(id, sitemap.GetProperty("projects").EnumerateArray().Select(p => p.GetProperty("id").GetInt32()));
+
+        Assert.Equal(HttpStatusCode.OK, (await admin.PutAsJsonAsync($"/api/admin/projects/{id}", Project())).StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, (await factory.CreateClient().GetAsync($"/api/public/ar/projects/{id}")).StatusCode);
+
         Assert.Equal(HttpStatusCode.NoContent, (await admin.DeleteAsync($"/api/admin/projects/{id}")).StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, (await factory.CreateClient().GetAsync($"/api/public/en/projects/{id}")).StatusCode);
     }
 
     [Fact]

@@ -43,7 +43,7 @@ public class PublicPagesTests(ApiFactory factory)
         Assert.NotNull(site);
         Assert.Equal("en", site.Locale);
         Assert.Equal("Privacy policy", site.Texts["legal.privacy_title"]);
-        Assert.Equal(196, site.Texts.Count);
+        Assert.Equal(198, site.Texts.Count);
         Assert.Contains($"more than {site.YearsOfExperience} years", site.Texts["home.tech.lead"]); // tokens filled for the site
         Assert.False(string.IsNullOrEmpty(site.Contact.Email));
         Assert.Equal(["web"], site.Services.Select(s => s.Key));

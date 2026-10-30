@@ -49,7 +49,7 @@ public class Project : IHasTimestamps, IEntity, ISortable
     public required string DescriptionEn { get; set; }
     public string? Image { get; set; }
 
-    /// <summary>More screenshots (upload paths), in order. With any, the card opens them as a gallery.</summary>
+    /// <summary>More screenshots (upload paths), in order. With any, the project gets a page of its own that shows them.</summary>
     public List<string> Gallery { get; set; } = [];
 
     public string? Url { get; set; }

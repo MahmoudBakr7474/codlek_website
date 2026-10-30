@@ -23,7 +23,7 @@ export async function proxy(request: NextRequest) {
     const locale = english ? 'en' : 'ar';
     const page = english ? pathname.slice(3) || '/' : pathname;
 
-    if (await isMissingBlogPage(page, searchParams)) {
+    if (await isMissingPage(page, searchParams)) {
         const url = request.nextUrl.clone();
         url.pathname = `/${locale}/not-found`;
         url.search = '';
@@ -41,60 +41,70 @@ export async function proxy(request: NextRequest) {
 }
 
 /*
- * The article and blog pages stream, so a notFound() in them can only add
- * "noindex" to a 200. An unknown article, or a blog page past the last, is caught
- * here instead and rewritten to the 404 page. The published slugs are kept for a
- * few minutes; a slug (or page) the list doesn't have refreshes it first, at most
- * every 10 seconds, so a post published a moment ago opens at once. When the API
- * can't be reached the page decides, as before.
+ * The article, project and blog pages stream, so a notFound() in them can only
+ * add "noindex" to a 200. An unknown article or project, or a blog page past the
+ * last, is caught here instead and rewritten to the 404 page. The sitemap (the
+ * published slugs and project pages) is kept for a few minutes; one the list
+ * doesn't have refreshes it first, at most every 10 seconds, so a post published
+ * a moment ago opens at once. When the API can't be reached the page decides, as before.
  */
-async function isMissingBlogPage(page: string, searchParams: URLSearchParams): Promise<boolean> {
-    const match = /^\/blog(?:\/([^/]+))?\/?$/.exec(page);
-    if (!match) {
-        return false;
-    }
+async function isMissingPage(page: string, searchParams: URLSearchParams): Promise<boolean> {
+    const project = /^\/projects\/([^/]+)\/?$/.exec(page);
+    const blog = /^\/blog(?:\/([^/]+))?\/?$/.exec(page);
 
-    let exists: (slugs: Set<string>) => boolean;
-    if (match[1]) {
-        const slug = safeDecode(match[1]);
-        exists = (slugs) => slugs.has(slug);
-    } else {
+    let exists: (known: Published) => boolean;
+    if (project) {
+        // Only the plain id is the page (not "025" or "25.0").
+        const id = /^[1-9]\d{0,8}$/.test(project[1]) ? Number(project[1]) : NaN;
+        exists = (known) => known.projects.has(id);
+    } else if (blog?.[1]) {
+        const slug = safeDecode(blog[1]);
+        exists = (known) => known.slugs.has(slug);
+    } else if (blog) {
         const number = Number(searchParams.get('page') ?? '1');
         if (!Number.isInteger(number) || number <= 1) {
             return false;
         }
 
-        exists = (slugs) => number <= Math.ceil(slugs.size / POSTS_PER_PAGE);
+        exists = (known) => number <= Math.ceil(known.slugs.size / POSTS_PER_PAGE);
+    } else {
+        return false;
     }
 
-    const known = await publishedSlugs(false);
+    const known = await publishedPages(false);
     if (known && exists(known)) {
         return false;
     }
 
-    const fresh = await publishedSlugs(true);
+    const fresh = await publishedPages(true);
     return fresh !== null && !exists(fresh);
 }
 
-let published: { slugs: Set<string>; at: number } | null = null;
+type Published = { slugs: Set<string>; projects: Set<number> };
 
-async function publishedSlugs(refresh: boolean): Promise<Set<string> | null> {
+let published: (Published & { at: number }) | null = null;
+
+async function publishedPages(refresh: boolean): Promise<Published | null> {
     const age = published ? Date.now() - published.at : Infinity;
     if (published && age < (refresh ? 10_000 : 5 * 60_000)) {
-        return published.slugs;
+        return published;
     }
 
     try {
         const response = await fetch(`${API}/api/public/sitemap`, { cache: 'no-store', signal: AbortSignal.timeout(3000) });
         if (!response.ok) {
-            return published?.slugs ?? null;
+            return published;
         }
 
-        const data = (await response.json()) as { posts: { slug: string }[] };
-        published = { slugs: new Set(data.posts.map((post) => post.slug)), at: Date.now() };
-        return published.slugs;
+        const data = (await response.json()) as { posts: { slug: string }[]; projects?: { id: number }[] };
+        published = {
+            slugs: new Set(data.posts.map((post) => post.slug)),
+            projects: new Set((data.projects ?? []).map((project) => project.id)),
+            at: Date.now(),
+        };
+        return published;
     } catch {
-        return published?.slugs ?? null;
+        return published;
     }
 }
 

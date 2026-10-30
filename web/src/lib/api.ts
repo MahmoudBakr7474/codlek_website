@@ -56,6 +56,9 @@ export const getSitemap = () => must<Schemas['SitemapDto']>('sitemap');
 export const getProjects = (locale: Locale, category?: string) =>
     must<Schemas['ProjectsDto']>(`${locale}/projects${category ? `?category=${encodeURIComponent(category)}` : ''}`);
 
+/** null: no such project, or one without a page of its own (no gallery). */
+export const getProject = (locale: Locale, id: number) => read<ProjectData>(`${locale}/projects/${id}`);
+
 /** null: a page past the last one. */
 export const getPosts = (locale: Locale, page: number) =>
     read<Schemas['PostsPageDto']>(`${locale}/posts${page > 1 ? `?page=${page}` : ''}`);

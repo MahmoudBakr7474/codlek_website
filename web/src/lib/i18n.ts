@@ -39,6 +39,10 @@ export function postHref(locale: Locale, slug: string): string {
     return href(locale, `/blog/${encodeURIComponent(slug)}`);
 }
 
+export function projectHref(locale: Locale, id: number): string {
+    return href(locale, `/projects/${id}`);
+}
+
 export type Texts = Record<string, string>;
 export type Translate = (key: string, replace?: Record<string, string | number>) => string;
 

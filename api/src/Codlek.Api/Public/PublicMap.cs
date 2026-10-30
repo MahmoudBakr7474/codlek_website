@@ -8,6 +8,9 @@ namespace Codlek.Api.Public;
 /// <summary>Database rows in the shape the public site reads.</summary>
 public sealed partial class PublicMap(Media media, HtmlSanitizer sanitizer)
 {
+    /// <summary>A published project with a gallery has a page of its own (/projects/{id}); its card links there.</summary>
+    public static bool HasPage(Data.Project p) => p.IsPublished && !p.IsComingSoon && p.Gallery.Count > 0;
+
     public CategoryDto Category(ProjectCategory c, SiteContent site) =>
         new(c.Id, c.Slug, site.Tr(c.NameAr, c.NameEn), string.IsNullOrWhiteSpace(c.Icon) ? "layout-grid" : c.Icon);
 

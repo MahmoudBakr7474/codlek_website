@@ -672,9 +672,16 @@ export interface components {
         };
         SitemapDto: {
             posts: components["schemas"]["SitemapPost"][];
+            projects: components["schemas"]["SitemapProject"][];
         };
         SitemapPost: {
             slug: string;
+            /** Format: date-time */
+            updatedAt: null | string;
+        };
+        SitemapProject: {
+            /** Format: int32 */
+            id: number;
             /** Format: date-time */
             updatedAt: null | string;
         };

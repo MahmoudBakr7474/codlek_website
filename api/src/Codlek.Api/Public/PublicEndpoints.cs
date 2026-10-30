@@ -19,6 +19,7 @@ public static class PublicEndpoints
         group.MapGet("/about", About);
         group.MapGet("/services", Services);
         group.MapGet("/projects", Projects);
+        group.MapGet("/projects/{id:int}", ProjectPage);
         group.MapGet("/posts", Posts);
         group.MapGet("/posts/{slug}", Article);
         group.MapGet("/jobs", Jobs);
@@ -171,6 +172,18 @@ public static class PublicEndpoints
             projects.Select(p => map.Project(p, site)).ToList());
     }
 
+    /// <summary>One project's page: only the projects that have one (PublicMap.HasPage).</summary>
+    private static async Task<Results<Ok<ProjectDto>, NotFound>> ProjectPage(string locale, int id, SiteContentLoader loader, CodlekDbContext db, PublicMap map, CancellationToken ct)
+    {
+        var project = await db.Projects.AsNoTracking().Include(p => p.ProjectCategory).FirstOrDefaultAsync(p => p.Id == id, ct);
+        if (project is null || !PublicMap.HasPage(project))
+        {
+            return TypedResults.NotFound();
+        }
+
+        return TypedResults.Ok(map.Project(project, await loader.LoadAsync(locale, ct)));
+    }
+
     private static async Task<Results<Ok<PostsPageDto>, NotFound>> Posts(string locale, string? page, SiteContentLoader loader, CodlekDbContext db, PublicMap map, TimeProvider clock, CancellationToken ct)
     {
         var site = await loader.LoadAsync(locale, ct);
@@ -227,11 +240,20 @@ public static class PublicEndpoints
         return new LegalDto(site.Text($"legal.{page}_title"), site.Text("legal.updated"), site.Legal(page));
     }
 
-    private static async Task<SitemapDto> Sitemap(CodlekDbContext db, TimeProvider clock, CancellationToken ct) =>
-        new(await Published(db, clock)
+    private static async Task<SitemapDto> Sitemap(CodlekDbContext db, TimeProvider clock, CancellationToken ct)
+    {
+        var posts = await Published(db, clock)
             .OrderByDescending(p => p.PublishedAt).ThenByDescending(p => p.Id)
             .Select(p => new SitemapPost(p.Slug, p.UpdatedAt))
-            .ToListAsync(ct));
+            .ToListAsync(ct);
+        // The gallery is a JSON column: the few published projects are checked here, not in SQL.
+        var projects = (await db.Projects.AsNoTracking().Where(p => p.IsPublished).OrderBy(p => p.SortOrder).ThenBy(p => p.Id).ToListAsync(ct))
+            .Where(PublicMap.HasPage)
+            .Select(p => new SitemapProject(p.Id, p.UpdatedAt))
+            .ToList();
+
+        return new SitemapDto(posts, projects);
+    }
 
     /// <summary>Published and not scheduled for later.</summary>
     private static IQueryable<Post> Published(CodlekDbContext db, TimeProvider clock)
