@@ -132,6 +132,42 @@ public class AdminTests(ApiFactory factory)
     }
 
     [Fact]
+    public async Task A_project_gallery_is_saved_in_order_and_shown_on_the_site()
+    {
+        var admin = await factory.AdminAsync();
+        var category = await factory.WithDbAsync(db => db.ProjectCategories.Select(c => c.Id).FirstAsync());
+        object Project(params string[] gallery) => new
+        {
+            projectCategoryId = category,
+            titleAr = "برنامج",
+            titleEn = "Gallery project",
+            descriptionAr = "وصف",
+            descriptionEn = "Description",
+            isPublished = true,
+            gallery,
+        };
+
+        var foreign = await admin.PostAsJsonAsync("/api/admin/projects", Project("../appsettings.json"));
+        Assert.Equal(HttpStatusCode.UnprocessableEntity, foreign.StatusCode);
+        Assert.True((await Json(foreign)).GetProperty("errors").TryGetProperty("gallery", out _));
+
+        var created = await admin.PostAsJsonAsync("/api/admin/projects", Project("projects/gallery/b.webp", "projects/gallery/a.webp", " ", "projects/gallery/b.webp"));
+        Assert.Equal(HttpStatusCode.Created, created.StatusCode);
+        var row = await Json(created);
+        var id = row.GetProperty("id").GetInt32();
+        // Blanks and repeats dropped, the order kept.
+        Assert.Equal(["projects/gallery/b.webp", "projects/gallery/a.webp"], row.GetProperty("gallery").EnumerateArray().Select(p => p.GetString()));
+
+        var site = await factory.CreateClient().GetFromJsonAsync<JsonElement>("/api/public/en/projects");
+        var shown = site.GetProperty("projects").EnumerateArray().Single(p => p.GetProperty("id").GetInt32() == id);
+        Assert.Equal(
+            ["https://api.test/uploads/projects/gallery/b.webp", "https://api.test/uploads/projects/gallery/a.webp"],
+            shown.GetProperty("gallery").EnumerateArray().Select(p => p.GetString()));
+
+        Assert.Equal(HttpStatusCode.NoContent, (await admin.DeleteAsync($"/api/admin/projects/{id}")).StatusCode);
+    }
+
+    [Fact]
     public async Task Rows_can_be_reordered_by_hand()
     {
         var admin = await factory.AdminAsync();

@@ -10,6 +10,8 @@ public sealed record ImagePreset(string Folder, int MaxWidth, double? MaxRatio =
     {
         // Cards and the home hero show the top of the screenshot at 16:10.
         ["projects"] = new("projects", 1600, MaxRatio: 0.75),
+        // A project's gallery shows each screenshot whole, phone captures included: no crop, height capped.
+        ["project-gallery"] = new("projects/gallery", 1920, MaxHeight: 1800),
         ["services"] = new("services", 1600, MaxHeight: 1200),
         ["posts"] = new("posts", 1600, MaxHeight: 1600),
         ["post-attachments"] = new("posts/attachments", 1600, MaxHeight: 1600),

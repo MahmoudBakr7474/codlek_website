@@ -374,6 +374,11 @@ namespace Codlek.Api.Data.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("description_en");
 
+                    b.PrimitiveCollection<string>("Gallery")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("gallery");
+
                     b.Property<string>("Image")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")

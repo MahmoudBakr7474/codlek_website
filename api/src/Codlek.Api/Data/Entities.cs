@@ -48,6 +48,10 @@ public class Project : IHasTimestamps, IEntity, ISortable
     public required string DescriptionAr { get; set; }
     public required string DescriptionEn { get; set; }
     public string? Image { get; set; }
+
+    /// <summary>More screenshots (upload paths), in order. With any, the card opens them as a gallery.</summary>
+    public List<string> Gallery { get; set; } = [];
+
     public string? Url { get; set; }
     public bool IsFeatured { get; set; }
     public bool IsComingSoon { get; set; }

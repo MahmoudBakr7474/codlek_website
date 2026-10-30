@@ -2,6 +2,7 @@ import { Create, DeleteButton, EditButton, Edit, List, useForm, useSelect, useTa
 import { Card, Col, Form, Input, Row, Select, Space, Switch, Table, Tag, Typography } from 'antd';
 import { Bilingual } from '../components/form/Bilingual';
 import { dirFor, suffix } from '../components/form/lang';
+import { GalleryUpload } from '../components/form/GalleryUpload';
 import { ImageUpload } from '../components/form/ImageUpload';
 import { OrderButtons, SearchBox, Thumb, ToggleCell, YesNoFilter } from '../components/list';
 
@@ -21,6 +22,8 @@ export type ProjectRow = {
     isPublished: boolean;
     sortOrder: number;
     categoryName: string | null;
+    gallery: string[];
+    galleryUrls: (string | null)[];
 };
 
 const required = [{ required: true, message: 'الحقل ده مطلوب.' }];
@@ -113,6 +116,13 @@ function ProjectForm() {
                     <Form.Item name="url" label="رابط الموقع" rules={[{ type: 'url', message: 'الرابط لازم يبدأ بـ https:// ويكون رابط صحيح.' }]}>
                         <Input maxLength={255} placeholder="https://" dir="ltr" />
                     </Form.Item>
+                    <Form.Item
+                        name="gallery"
+                        label="صور المعرض (اختياري)"
+                        extra="لو ضفت صور هنا، الكارت على الموقع بيفتح تفاصيل المشروع وصوره كمعرض بدل ما يروح للرابط، والرابط (لو موجود) بيظهر جوه التفاصيل. لحد 12 صورة، وبتظهر بنفس الترتيب ده. الصور الطويلة (زي لقطات الموبايل) بتتعرض كاملة."
+                    >
+                        <GalleryUpload />
+                    </Form.Item>
                 </Card>
             </Col>
             <Col xs={24} lg={8}>
@@ -143,7 +153,7 @@ export function ProjectCreate() {
     const { formProps, saveButtonProps } = useForm<ProjectRow>({ redirect: 'list' });
     return (
         <Create title="مشروع جديد" saveButtonProps={saveButtonProps}>
-            <Form {...formProps} layout="vertical" initialValues={{ isPublished: true, isFeatured: false, isComingSoon: false }}>
+            <Form {...formProps} layout="vertical" initialValues={{ isPublished: true, isFeatured: false, isComingSoon: false, gallery: [] }}>
                 <ProjectForm />
             </Form>
         </Create>

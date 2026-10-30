@@ -1,17 +1,19 @@
 /* eslint-disable @next/next/no-img-element -- screenshots come from the API host, at their own sizes */
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Images } from 'lucide-react';
 import type { ProjectData } from '@/lib/api';
 import { alignFor, dirOf, type Locale, type Translate } from '@/lib/i18n';
 import { cx } from '@/lib/cx';
 import { BrowserDots } from '../ui/BrowserDots';
 import { NamedIconTile } from '../ui/NamedIconTile';
+import { ProjectGallery } from './ProjectGallery';
 
 /*
  * A project as a browser window: the real screenshot under a bar with the site's
- * address, then category, title, description and the address. A live site with a
- * link makes the whole card one link (the title, stretched); "coming soon" and
- * projects without a link are plain cards. Flat, as in the design (a hairline, no
- * shadow); a live project lifts on hover.
+ * address, then category, title, description and the address. A project with a
+ * gallery opens it (the title, stretched, is the button; its link moves into the
+ * dialog); otherwise a live site with a link makes the whole card one link.
+ * "Coming soon" and projects without either are plain cards. Flat, as in the
+ * design (a hairline, no shadow); a card that opens something lifts on hover.
  */
 export function ProjectCard({
     project,
@@ -30,6 +32,8 @@ export function ProjectCard({
     className?: string;
 }) {
     const linkable = project.isLinkable;
+    const gallery = project.isComingSoon ? [] : (project.gallery ?? []);
+    const interactive = linkable || gallery.length > 0;
     const titleDir = dirOf(project.title, locale);
     const descriptionDir = dirOf(project.description, locale);
     const align = alignFor(locale);
@@ -38,8 +42,8 @@ export function ProjectCard({
         <article
             className={cx(
                 'group relative flex flex-col overflow-hidden rounded-card border border-line bg-surface',
-                linkable &&
-                    'transition duration-300 hover:-translate-y-1 hover:border-primary-line hover:shadow-float active:border-primary-line active:duration-150 motion-safe:active:scale-[0.985] has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-[3px] has-[a:focus-visible]:outline-primary-ink',
+                interactive &&
+                    'transition duration-300 hover:-translate-y-1 hover:border-primary-line hover:shadow-float active:border-primary-line active:duration-150 motion-safe:active:scale-[0.985] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-[3px] has-[:focus-visible]:outline-primary-ink',
                 className,
             )}
             data-reveal
@@ -62,7 +66,7 @@ export function ProjectCard({
                                 height={750}
                                 className={cx(
                                     'shot size-full object-cover object-top transition duration-700 ease-out',
-                                    linkable && 'group-hover:scale-[1.03]',
+                                    interactive && 'group-hover:scale-[1.03]',
                                     project.isComingSoon && 'opacity-60 grayscale',
                                 )}
                             />
@@ -87,7 +91,21 @@ export function ProjectCard({
                 )}
 
                 <Heading dir={titleDir} className={cx('text-[19px] leading-[1.7] font-extrabold', titleDir && align)}>
-                    {linkable ? (
+                    {gallery.length > 0 ? (
+                        <ProjectGallery
+                            title={project.title}
+                            category={project.category?.name}
+                            description={project.description}
+                            images={gallery}
+                            url={linkable ? project.url : null}
+                            host={project.host}
+                            titleDir={titleDir}
+                            descriptionDir={descriptionDir}
+                            labels={{ close: t('close'), prev: t('projects.gallery_prev'), next: t('projects.gallery_next'), visit: t('projects.visit') }}
+                        >
+                            {project.title}
+                        </ProjectGallery>
+                    ) : linkable ? (
                         <a
                             href={project.url!}
                             target="_blank"
@@ -105,7 +123,13 @@ export function ProjectCard({
                     {project.description}
                 </p>
 
-                {linkable && project.host && (
+                {gallery.length > 0 ? (
+                    // What the card opens; the title above is the actual button.
+                    <span className="inline-flex items-center gap-1.5 self-end text-[15px] font-bold text-primary-ink" aria-hidden="true">
+                        <Images className="size-4 shrink-0" />
+                        {t('projects.details')}
+                    </span>
+                ) : linkable && project.host && (
                     // The address, as in the design; the title above is the actual link.
                     <span className="inline-flex max-w-full items-center gap-1 self-end text-[15px] font-bold text-primary-ink" dir="ltr" aria-hidden="true">
                         <span className="truncate">{project.host}</span>

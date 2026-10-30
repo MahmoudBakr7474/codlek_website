@@ -652,3 +652,33 @@ html[data-menu-open] #action-bar {
         transition: transform 900ms var(--ease-out) 250ms;
     }
 }
+
+/* A project's gallery (ProjectGallery.tsx): the page under it keeps still, and it
+   opens with a short fade, growing from 96% unless motion is reduced. */
+html:has(dialog.project-gallery[open]) {
+    overflow: hidden;
+}
+
+dialog.project-gallery[open],
+dialog.project-gallery[open]::backdrop {
+    animation: gallery-fade 200ms var(--ease-out);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    dialog.project-gallery[open] {
+        animation: gallery-in 220ms var(--ease-out);
+    }
+}
+
+@keyframes gallery-fade {
+    from {
+        opacity: 0;
+    }
+}
+
+@keyframes gallery-in {
+    from {
+        opacity: 0;
+        scale: 0.96;
+    }
+}

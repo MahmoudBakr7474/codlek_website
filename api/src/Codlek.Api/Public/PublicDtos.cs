@@ -19,7 +19,9 @@ public sealed record ProjectDto(
     bool IsLinkable,
     bool IsFeatured,
     bool IsComingSoon,
-    CategoryDto? Category);
+    CategoryDto? Category,
+    // More screenshots (absolute URLs): with any, the card opens the project with these as a gallery.
+    IReadOnlyList<string> Gallery);
 
 public sealed record ServiceDto(
     string Key,

@@ -16,11 +16,11 @@ public sealed record CategoryRow(int Id, string Slug, string NameAr, string Name
 
 public sealed record ProjectInput(
     int? ProjectCategoryId, string? TitleAr, string? TitleEn, string? DescriptionAr, string? DescriptionEn,
-    string? Image, string? Url, bool IsFeatured, bool IsComingSoon, bool IsPublished);
+    string? Image, string? Url, bool IsFeatured, bool IsComingSoon, bool IsPublished, List<string>? Gallery = null);
 public sealed record ProjectRow(
     int Id, int? ProjectCategoryId, string TitleAr, string TitleEn, string DescriptionAr, string DescriptionEn,
     string? Image, string? ImageUrl, string? Url, string? Host, bool IsFeatured, bool IsComingSoon, bool IsPublished,
-    int SortOrder, string? CategoryName);
+    int SortOrder, string? CategoryName, IReadOnlyList<string> Gallery, IReadOnlyList<string?> GalleryUrls);
 
 public sealed record FeatureInput(string? Ar, string? En);
 public sealed record ServiceInput(
@@ -118,7 +118,8 @@ public static class AdminResources
         Query = db => db.Projects.Include(p => p.ProjectCategory),
         Row = (p, ctx) => new ProjectRow(
             p.Id, p.ProjectCategoryId, p.TitleAr, p.TitleEn, p.DescriptionAr, p.DescriptionEn, p.Image, ctx.Media.Url(p.Image),
-            p.Url, PublicMap.Host(p.Url), p.IsFeatured, p.IsComingSoon, p.IsPublished, p.SortOrder, p.ProjectCategory?.NameAr),
+            p.Url, PublicMap.Host(p.Url), p.IsFeatured, p.IsComingSoon, p.IsPublished, p.SortOrder, p.ProjectCategory?.NameAr,
+            p.Gallery, p.Gallery.Select(ctx.Media.Url).ToList()),
         Validate = async (input, check, db, _) =>
         {
             check.Text("titleAr", input.TitleAr, 150);
@@ -132,6 +133,17 @@ public static class AdminResources
 
             check.Text("url", input.Url, 255, required: false);
             check.Url("url", Optional(input.Url));
+
+            // Only pictures uploaded in the dashboard (under the gallery preset's folder).
+            var gallery = GalleryOf(input.Gallery);
+            if (gallery.Count > MaxGallery)
+            {
+                check.Fail("gallery", $"أقصى عدد {MaxGallery} صورة.");
+            }
+            else if (gallery.Any(path => path.Length > 255 || path.Contains("..") || !path.StartsWith("projects/gallery/", StringComparison.Ordinal)))
+            {
+                check.Fail("gallery", "صور المعرض لازم تترفع من هنا.");
+            }
         },
         Create = () => new Project { TitleAr = "", TitleEn = "", DescriptionAr = "", DescriptionEn = "" },
         Apply = (p, input) =>
@@ -142,6 +154,7 @@ public static class AdminResources
             p.DescriptionAr = Clean(input.DescriptionAr);
             p.DescriptionEn = Clean(input.DescriptionEn);
             p.Image = Optional(input.Image);
+            p.Gallery = GalleryOf(input.Gallery);
             p.Url = Optional(input.Url);
             p.IsFeatured = input.IsFeatured;
             p.IsComingSoon = input.IsComingSoon;
@@ -155,13 +168,18 @@ public static class AdminResources
             ["isFeatured"] = (query, value) => query.Where(p => p.IsFeatured == (value == "true")),
         },
         Sort = (query, _, _) => Ordered(query),
-        Images = p => [p.Image],
+        Images = p => [p.Image, .. p.Gallery],
         Toggles =
         {
             ["isPublished"] = (p, on) => p.IsPublished = on,
             ["isFeatured"] = (p, on) => p.IsFeatured = on,
         },
     };
+
+    private const int MaxGallery = 12;
+
+    private static List<string> GalleryOf(List<string>? paths) =>
+        (paths ?? []).Select(path => path?.Trim() ?? "").Where(path => path != "").Distinct().ToList();
 
     private static readonly AdminResource<Service, ServiceInput, ServiceRow> Services = new()
     {

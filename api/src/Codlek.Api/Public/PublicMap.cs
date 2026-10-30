@@ -21,7 +21,8 @@ public sealed partial class PublicMap(Media media, HtmlSanitizer sanitizer)
         !string.IsNullOrWhiteSpace(p.Url) && !p.IsComingSoon,
         p.IsFeatured,
         p.IsComingSoon,
-        p.ProjectCategory is null ? null : Category(p.ProjectCategory, site));
+        p.ProjectCategory is null ? null : Category(p.ProjectCategory, site),
+        p.Gallery.Select(media.Url).OfType<string>().ToList());
 
     public ServiceDto Service(Data.Service s, SiteContent site) => new(
         s.Key,

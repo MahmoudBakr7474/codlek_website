@@ -51,7 +51,9 @@ Rewrite of the Codlek company site from Laravel. The plan, decisions and phase s
   in Africa/Cairo.
 - `settings` = one row per key, raw JSON value. Defaults are `Content/site-defaults.json` (exported from
   `Site::default()`); a key missing from the table means "use the default". UI texts: `Content/lang/{ar,en}.json`
-  (192 keys each); owner overrides live in the `texts` setting, storing only lines that differ.
+  (196 keys each); owner overrides live in the `texts` setting, storing only lines that differ.
+- A project's `gallery` (upload paths, preset `project-gallery`, no crop) turns its card into a button that opens
+  `ProjectGallery` (a dialog with the screenshots); its link, if any, moves into the dialog.
 - Tokens `{years}`, `{email}`, `{phone}` in content are filled when read.
 - Admin sign-in: httpOnly cookie with a stamp of the password hash (a new password ends other sessions); keys
   persist in `storage/keys`. Every admin write carries `X-Codlek-Admin: 1` and pings the site's revalidate hook.

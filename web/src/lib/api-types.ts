@@ -636,6 +636,7 @@ export interface components {
             isFeatured: boolean;
             isComingSoon: boolean;
             category: null | components["schemas"]["CategoryDto"];
+            gallery: string[];
         };
         ProjectsDto: {
             categories: components["schemas"]["CategoryDto"][];
