@@ -50,9 +50,12 @@ export function ProjectGallery({
     const headingId = useId();
     const many = images.length > 1;
 
+    // Every opening starts from the first picture.
     function open() {
         setOpened(true);
+        setIndex(0);
         dialog.current?.showModal();
+        track.current?.scrollTo({ left: 0 });
     }
 
     function go(to: number) {
@@ -122,7 +125,7 @@ export function ProjectGallery({
                                         className="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                                     >
                                         {images.map((src, i) => (
-                                            <div key={src} className="grid h-[min(62dvh,600px)] w-full shrink-0 snap-start snap-always place-items-center p-3 sm:p-6">
+                                            <div key={src} className="grid h-[min(46dvh,420px)] w-full shrink-0 snap-start snap-always place-items-center p-3 sm:h-[min(54dvh,560px)] sm:p-6">
                                                 {opened && (
                                                     <img
                                                         src={src}
@@ -158,7 +161,7 @@ export function ProjectGallery({
                                 </div>
 
                                 {many && (
-                                    <div className="flex gap-2 overflow-x-auto px-4 pt-3 [scrollbar-width:thin] sm:px-6">
+                                    <div className="flex gap-2 overflow-x-auto px-4 pt-3 [scrollbar-width:none] sm:px-6 [&::-webkit-scrollbar]:hidden">
                                         {images.map((src, i) => (
                                             <button
                                                 key={src}
